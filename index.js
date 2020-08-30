@@ -53,7 +53,7 @@ console.log("    Run:");
 const fullQualityDir = fullQualityPaths.filter(f => fs.statSync(f).isDirectory());
 
 fullQualityDir.forEach(f => { 
-    console.log("        Current directory: "  + filePath);
+    console.log("        Current directory: "  + f);
 });
 
 // fullQualityPaths.forEach(filePath => {
