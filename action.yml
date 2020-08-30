@@ -4,7 +4,7 @@ inputs:
   dir:
     description: "Root folder for zipping sub folders"
     required: true
-  html_url:
+  release_id:
     required: true
   upload_url:
     required: true

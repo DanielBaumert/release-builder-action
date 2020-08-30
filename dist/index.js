@@ -12254,14 +12254,14 @@ const octokit = github.getOctokit(process.env.GITHUB_TOKEN);
     // const releaseName = tagName;
 
     const uploadUrl = core.getInput('upload_url', { required: true});
-    const htmlUrl = core.getInput('html_url', { required: true});
+    const releaseId = core.getInput('release_id', { required: true});
     
     console.log("Input: ");
     console.log("    dir: " + dir);
     // console.log("    tag: " + tagName);
     // console.log("    releaseName: " + releaseName);
     console.log("    htmlUrl: " + htmlUrl);
-    console.log("    uploadUrl: " + uploadUrl);
+    console.log("    releaseId: " + releaseId);
     
     
 
@@ -12359,9 +12359,13 @@ const octokit = github.getOctokit(process.env.GITHUB_TOKEN);
 
         bodyContent += `\n\t-[${fileName}](${uploadAsset.url})`;
     }
+
+    const { owner, repo } = github.context.repo;
+
     await octokit.repos.updateRelease( { 
-        url: htmlUrl,
-        body: bodyContent
+        owner: owner,
+        repo: repo,
+        release_id: release_id
     });
 
 })();
