@@ -12335,10 +12335,10 @@ const octokit = github.getOctokit(process.env.GITHUB_TOKEN);
 
     let bodyContent  = "# Templates";
 
-    for (const f in fullQualityZip) { 
+    for (const f of fullQualityZip) { 
         
-        if(f == null) { 
-            return;
+        if(f === null) { 
+            continue;
         }
 
         const fileName = path.basename(f);
