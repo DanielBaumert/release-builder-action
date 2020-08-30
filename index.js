@@ -17,7 +17,7 @@ const dir = core.getInput("dir");
 console.log("Input: ")
 console.log("\tDir: " + dir);
 console.log("Programm: ")
-const rootDir = path.join(process.env.GITHUB_WORKSPACE, dir);
+const rootDir = normilizePath(dir);
 console.log("\ŧrootDir: " + rootDir);
 
 if(!fs.existsSync(rootDir)){ 
@@ -42,7 +42,7 @@ fullQualityPaths.forEach(filePath => {
     console.log("\t\tCurrent file: "  + filePath);
 
     // check if folder
-    let fsStats = fs.lstatSync(filePath);
+    // let fsStats = fs.lstatSync(filePath);
     // if(!fsStats.isDirectory()){ 
     //     console.log("\t\ŧIs not a directory -> skip");
     //     return;
