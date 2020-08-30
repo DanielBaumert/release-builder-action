@@ -12273,22 +12273,17 @@ let fullQualityPaths = fileObjects.map(function(file) {
 
 console.log("    Run:");
 
-for (var iFilePath in fullQualityPaths) { 
-    var filePath = fullQualityPaths[iFilePath];
-    
+fullQualityPaths.forEach(function(filePath) {
     console.log("        Current file: "  + filePath);
 
     // check if folder
     let fsStats = fs.lstatSync(filePath);
     if(!fsStats.isDirectory()){ 
         console.log("        Is not a directory -> skip");
-        continue;
+    } else { 
+        
     }
-}
-
-// fullQualityPaths.forEach(function(filePath) {
-    
-
+});
 //     // if(!isDir(filePath)) { 
 //     //     return;
 //     // }
