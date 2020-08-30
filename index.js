@@ -131,7 +131,8 @@ const octokit = github.getOctokit(process.env.GITHUB_TOKEN);
     await octokit.repos.updateRelease( { 
         owner: owner,
         repo: repo,
-        release_id: releaseId
+        release_id: releaseId, 
+        body: bodyContent
     });
 
 })();
