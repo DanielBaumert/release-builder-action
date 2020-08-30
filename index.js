@@ -40,36 +40,35 @@ fileObject.forEach(file => {
         console.log("       "  + file + " - Is not a directory -> skip");
         return;
     }
+    // // zip
+    // try { 
+    //     fs.accessSync(file, fs.constants.F_OK);
+    // } catch {
+    //     console.log("       " + file + " - Can not access the directory");
+    //     return;
+    // }
 
-    const zipFilePath = file + ".zip";
-    console.log("       zipFilePath: " + zipFilePath);
-    // zip
-    try { 
-        fs.accessSync(file, fs.constants.F_OK);
-    } catch {
-        console.log("       " + file + " - Can not access the directory");
-        return;
-    }
+    // const zipFilePath = file + ".zip";
+    // console.log("       zipFilePath: " + zipFilePath);
+    // if(!fs.existsSync(zipFilePath)){ 
+    //     let fd = fs.openSync(zipFilePath, "w");
+    //     fs.closeSync(fd);
+    // }
 
-    if(!fs.existsSync(zipFilePath)){ 
-        let fd = fs.openSync(zipFilePath, "w");
-        fs.closeSync(fd);
-    }
+    // try  { 
+    //     fs.accessSync(zipFilePath, fs.constants.F_OK);
+    // } catch { 
+    //     console.log("       " + zipArchive + "- Can not access the zip");
+    //     return;
+    // }
 
-    try  { 
-        fs.accessSync(zipFilePath, fs.constants.F_OK);
-    } catch { 
-        console.log("       " + zipArchive + "- Can not access the zip");
-        return;
-    }
+    // var output = fs.createWriteStream(zipFilePath);
 
-    var output = fs.createWriteStream(zipFilePath);
-
-    var zipArchive = archiver('zip');
-    zipArchive.pipe(output);
-    zipArchive.directory(file, false);
-    zipArchive.finalize();
-    console.log(" ");
+    // var zipArchive = archiver('zip');
+    // zipArchive.pipe(output);
+    // zipArchive.directory(file, false);
+    // zipArchive.finalize();
+    // console.log(" ");
 });
 
 function isDir(path) { 
