@@ -12333,24 +12333,35 @@ const octokit = github.getOctokit(process.env.GITHUB_TOKEN);
         return fZip;
     });
 
-    fullQualityZip.forEach(async f => { 
+    let bodyContent  = "# Templates";
 
+    for (const f in fullQualityZip) { 
+        
         if(f == null) { 
             return;
         }
 
+        const fileName = path.basename(f);
         const headers = { 
             'content-type': "application/zip", 
             'content-length': fs.statSync(f).size 
         };
-
-        const uploadAssetResponse = await octokit.repos.uploadReleaseAsset({
+        
+        const uploadAsset = await octokit.repos.uploadReleaseAsset({
             url: uploadUrl,
             headers,
-            name: path.basename(f),
+            name: fileName,
             file: fs.readFileSync(f)
         });
+
+        bodyContent += `\n\t-[${fileName}](${uploadAsset.url})`
+    }
+
+    await octokit.repos.updateRelease( { 
+        url: uploadUrl,
+        body: bodyContent
     });
+
 })();
 
 /***/ }),
