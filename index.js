@@ -39,10 +39,10 @@ let fullQualityPaths = fileObjects.map(file => {
 
 console.log("    Run:");
 
-fullQualityPaths.filter(f => { 
-    fs.statSync(f).isDirectory()
-}).forEach(f => { 
-    console.log("        Current file: "  + filePath);
+let fullQualityDir = fullQualityPaths.filter(f => { fs.statSync(f).isDirectory()});
+
+fullQualityDir.forEach(f => { 
+    console.log("        Current directory: "  + filePath);
 });
 
 // fullQualityPaths.forEach(filePath => {
