@@ -15,40 +15,38 @@ console.log("== Run ==")
 const dir = core.getInput("dir");
 
 console.log("Input: ")
-console.log("   Dir: " + dir);
+console.log("\tDir: " + dir);
 console.log("Programm: ")
 const rootDir = path.join(process.env.GITHUB_WORKSPACE, dir);
-console.log("   rootDir: " + rootDir);
+console.log("\ŧrootDir: " + rootDir);
 
 if(!fs.existsSync(rootDir)){ 
-    console.log("   " + rootDir + " - Not Found");
+    console.log("\t" + rootDir + " - Not Found");
     return;
 }
-if(!isDir(rootDir)) { 
-    console.log("   " + dir + " - Is not a directory");
-    return;
-}
+
+/*TODO check if dir*/
 
 let fileObjects = fs.readdirSync(rootDir);
 
-console.log("   Current directory filenames:"); 
+console.log("\tCurrent directory filenames:"); 
 
 let fullQualityPaths = fileObjects.map(file => { 
     let filePath = normilizePath(file);
-    console.log("       File: " + file + " Path: " + filePath);
+    console.log("\t\tFile: " + file + " Path: " + filePath);
     return filePath;
 });
-console.log("   CRun:"); 
+console.log("\ŧRun:"); 
 
 fullQualityPaths.forEach(filePath => {
-    console.log("       Current file: "  + filePath);
+    console.log("\t\tCurrent file: "  + filePath);
 
     // check if folder
     let fsStats = fs.lstatSync(filePath);
-    if(!fsStats.isDirectory()){ 
-        console.log("       Is not a directory -> skip");
-        return;
-    }
+    // if(!fsStats.isDirectory()){ 
+    //     console.log("\t\ŧIs not a directory -> skip");
+    //     return;
+    // }
 
     // if(!isDir(filePath)) { 
     //     return;
@@ -86,9 +84,4 @@ fullQualityPaths.forEach(filePath => {
 
 function normilizePath(filePath) { 
     return path.join(process.env.GITHUB_WORKSPACE, filePath);
-}
-
-function isDir(filePath) { 
-    let fsStats = fs.lstatSync(filePath);
-    return fsStats.isDirectory();
 }
