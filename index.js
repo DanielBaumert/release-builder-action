@@ -39,49 +39,53 @@ let fullQualityPaths = fileObjects.map(function(file) {
 
 console.log("    Run:");
 
-fullQualityPaths.forEach(function(filePath) {
+for (filePath in fullQualityPaths) { 
     console.log("        Current file: "  + filePath);
 
     // check if folder
     let fsStats = fs.lstatSync(filePath);
     if(!fsStats.isDirectory()){ 
-         console.log("        Is not a directory -> skip");
-         return;
+        console.log("        Is not a directory -> skip");
+        continue;
     }
+}
 
-    // if(!isDir(filePath)) { 
-    //     return;
-    // }
-    // // zip
-    // try { 
-    //     fs.accessSync(file, fs.constants.F_OK);
-    // } catch {
-    //     console.log("       " + file + " - Can not access the directory");
-    //     return;
-    // }
+// fullQualityPaths.forEach(function(filePath) {
+    
 
-    // const zipFilePath = file + ".zip";
-    // console.log("       zipFilePath: " + zipFilePath);
-    // if(!fs.existsSync(zipFilePath)){ 
-    //     let fd = fs.openSync(zipFilePath, "w");
-    //     fs.closeSync(fd);
-    // }
+//     // if(!isDir(filePath)) { 
+//     //     return;
+//     // }
+//     // // zip
+//     // try { 
+//     //     fs.accessSync(file, fs.constants.F_OK);
+//     // } catch {
+//     //     console.log("       " + file + " - Can not access the directory");
+//     //     return;
+//     // }
 
-    // try  { 
-    //     fs.accessSync(zipFilePath, fs.constants.F_OK);
-    // } catch { 
-    //     console.log("       " + zipArchive + "- Can not access the zip");
-    //     return;
-    // }
+//     // const zipFilePath = file + ".zip";
+//     // console.log("       zipFilePath: " + zipFilePath);
+//     // if(!fs.existsSync(zipFilePath)){ 
+//     //     let fd = fs.openSync(zipFilePath, "w");
+//     //     fs.closeSync(fd);
+//     // }
 
-    // var output = fs.createWriteStream(zipFilePath);
+//     // try  { 
+//     //     fs.accessSync(zipFilePath, fs.constants.F_OK);
+//     // } catch { 
+//     //     console.log("       " + zipArchive + "- Can not access the zip");
+//     //     return;
+//     // }
 
-    // var zipArchive = archiver('zip');
-    // zipArchive.pipe(output);
-    // zipArchive.directory(file, false);
-    // zipArchive.finalize();
-    // console.log(" ");
-});
+//     // var output = fs.createWriteStream(zipFilePath);
+
+//     // var zipArchive = archiver('zip');
+//     // zipArchive.pipe(output);
+//     // zipArchive.directory(file, false);
+//     // zipArchive.finalize();
+//     // console.log(" ");
+// });
 
 function normilizePath(filePath) { 
     return path.join(process.env.GITHUB_WORKSPACE, filePath);
