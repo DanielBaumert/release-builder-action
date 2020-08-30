@@ -12327,7 +12327,7 @@ const octokit = github.getOctokit(process.env.GITHUB_TOKEN);
 
 
     const { owner, repo } = github.context.repo;
-    const tagName = core.getInput('tag_name', { required: true });
+    const tagName = core.getInput('tag_name', { required: true }).replace('refs/tags/', '');
     const releaseName = tagName;
     const body = "";
 

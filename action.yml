@@ -4,7 +4,8 @@ inputs:
   dir:  # id of input
     description: "Root folder for zipping sub folders"
     required: true
-  tag_name: 
+  tag_name:
+    description: 'The name of the tag. This should come from the webhook payload, `github.GITHUB_REF` when a user pushes a new tag'
     required: true
 runs:
   using: "node12"
