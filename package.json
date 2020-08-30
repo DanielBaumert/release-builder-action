@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "ncc build index.js && git commit -a -m 'Auto Build' && git push -u origin master && git push --delete origin v1"
+    "build": "ncc build index.js && git commit -a -m 'Auto Build' && git push -u origin master && git push --delete origin v1",
+    "release" : "git release -v v1 -m v1"
   },
   "repository": {
     "type": "git",
