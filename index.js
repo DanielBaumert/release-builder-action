@@ -3,121 +3,141 @@ const path = require("path");
 const archiver = require('archiver');
 
 const core = require('@actions/core');
-const github = require('@actions/github');
+const { GitHub, context } = require('@actions/github');
 
+const github = new GitHub(process.env.GITHUB_TOKEN);
 
 ///
 /// Code
 ///
+(async function() { 
+    console.log("== Run ==");
 
-console.log("== Run ==")
+    const dir = core.getInput("dir", { required: true });
+    const root = path.join(process.env.GITHUB_WORKSPACE, dir);
 
-const dir = core.getInput("dir");
-const root = path.join(process.env.GITHUB_WORKSPACE, dir);
+    console.log("Input: ");
+    console.log("    dir: " + dir);
 
-console.log("Input: ")
-console.log("    Dir: " + dir);
-console.log("Programm: ")
+    console.log("Programm: ");
 
-// check dir input
-if(!fs.existsSync(root)){ 
-    console.error("    " + root + " - Not Found");
-    return;
-}
+    // check dir input
+    if(!fs.existsSync(root)){ 
+        console.error("    " + root + " - Not Found");
+        return;
+    }
 
-let fsStats = fs.lstatSync(root);
-if(!fsStats.isDirectory()){
-    console.error("    " + root + " - Is not a directory");
-    return;
-}
+    let fsStats = fs.lstatSync(root);
+    if(!fsStats.isDirectory()){
+        console.error("    " + root + " - Is not a directory");
+        return;
+    }
 
 
-const normilizePath = (filePath) => path.join(root, filePath);
+    const normilizePath = (filePath) => path.join(root, filePath);
 
-console.log("    rootDir: " + root);
+    console.log("    rootDir: " + root);
 
-/*TODO check if dir*/
+    /*TODO check if dir*/
 
-const fileObjects = fs.readdirSync(root);
+    const fileObjects = fs.readdirSync(root);
 
-console.log("    Current directory filenames:"); 
+    console.log("    Current directory filenames:"); 
 
-const fullQualityPaths = fileObjects.map(f => { 
-    let fPath = normilizePath(f);
-    console.log("        File: " + f + " Path: " + fPath);
-    return fPath;
-});
+    const fullQualityPaths = fileObjects.map(f => { 
+        let fPath = normilizePath(f);
+        console.log("        File: " + f + " Path: " + fPath);
+        return fPath;
+    });
 
-console.log("    Run:");
+    console.log("    Run:");
 
-const fullQualityDir = fullQualityPaths.filter(f => fs.statSync(f).isDirectory());
+    const fullQualityDir = fullQualityPaths.filter(f => fs.statSync(f).isDirectory());
 
-fullQualityDir.forEach(f => { 
-    console.log("        Current directory: "  + f);
+    const fullQualityZip = fullQualityDir.map(f => { 
+        console.log("        Current directory: "  + f);
 
-    let fZip = f + ".zip";  
-
-    fs.access(f, fs.constants.F_OK, (err) => { 
-        if(err) { 
+        let fZip = f + ".zip";  
+        try { 
+            fs.accessSync(f, fs.constants.F_OK);
+        } catch (err) { 
             console.error("        Could not acces the " + f);
-            return;
+            return null;
         }
-
-        fs.access(fZip, fs.constants.F_OK | fs.constants.W_OK, (err) => { 
+        
+        try { 
+            fs.accessSync(fZip, fs.constants.F_OK | fs.constants.W_OK);
+        } catch(err)  { 
             if(err) { 
                 if(err.code === 'ENOENT') { 
                     var fd = fs.openSync(fZip, "w");
                     fs.closeSync(fd);
                 } else { 
                     console.error("        Could not acces the " + fZip);
-                    return;
+                    return null;
                 }                
             }
+        }
 
-            var output = fs.createWriteStream(fZip);
-
-            var zipArchive = archiver('zip');
-            zipArchive.pipe(output);
-            zipArchive.directory(f, false);
-            zipArchive.finalize();
-            console.log(" ");
-
-        });
+        var output = fs.createWriteStream(fZip);
+        console.error("        Create zip for " + f);
+        var zipArchive = archiver('zip');
+        zipArchive.pipe(output);
+        zipArchive.directory(f, false);
+        zipArchive.finalize();
+        console.error("        Created zip for " + f);
+        
+        return fZip;
     });
-});
 
-// fullQualityPaths.forEach(filePath => {
 
-//     // if(!isDir(filePath)) { 
-//     //     return;
-//     // }
-//     // // zip
-//     // try { 
-//     //     fs.accessSync(file, fs.constants.F_OK);
-//     // } catch {
-//     //     console.log("       " + file + " - Can not access the directory");
-//     //     return;
-//     // }
+    const { owner, repo } = context.repo;
+    const tagName = core.getInput('tag_name', { required: true });
+    const releaseName = tagName;
+    const body = "";
 
-//     // const zipFilePath = file + ".zip";
-//     // console.log("       zipFilePath: " + zipFilePath);
-//     // if(!fs.existsSync(zipFilePath)){ 
-//     //     let fd = fs.openSync(zipFilePath, "w");
-//     //     fs.closeSync(fd);
-//     // }
 
-//     // try  { 
-//     //     fs.accessSync(zipFilePath, fs.constants.F_OK);
-//     // } catch { 
-//     //     console.log("       " + zipArchive + "- Can not access the zip");
-//     //     return;
-//     // }
+    const createReleaseResponse = await github.repos.createRelease({
+        owner,
+        repo,
+        tag_name: tag,
+        name: releaseName,
+        body: /*bodyFileContent || */ body,
+        draft: false,
+        prerelease: false,
+        target_commitish: commitish
+    });
 
-//     // var output = fs.createWriteStream(zipFilePath);
+    const {
+        data: { 
+            id: releaseId, 
+            html_url: htmlUrl, 
+            upload_url: uploadUrl 
+        }
+    } = createReleaseResponse;
 
-//     // var zipArchive = archiver('zip');
-//     // zipArchive.pipe(output);
-//     // zipArchive.directory(file, false);
-//     // zipArchive.finalize();
-//     // console.log(" ");
-// });
+    fullQualityZip.forEach(async f => { 
+
+        if(f == null) { 
+            return;
+        }
+
+        const headers = { 
+            'content-type': "application/zip", 
+            'content-length': fs.statSync(f).size 
+        };
+
+        const uploadAssetResponse = await github.repos.uploadReleaseAsset({
+            url: uploadUrl,
+            headers,
+            name: assetName,
+            file: fs.readFileSync(f)
+        });
+
+        const {
+            data: { browser_download_url: browserDownloadUrl }
+        } = uploadAssetResponse;
+
+        core.setOutput('browser_download_url', browserDownloadUrl);
+    });
+})();

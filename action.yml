@@ -4,6 +4,8 @@ inputs:
   dir:  # id of input
     description: "Root folder for zipping sub folders"
     required: true
+  tag_name: 
+    required: true
 runs:
   using: "node12"
   main: "dist/index.js"
