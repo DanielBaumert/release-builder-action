@@ -12336,7 +12336,7 @@ const octokit = github.getOctokit(process.env.GITHUB_TOKEN);
         return fZip;
     });
 
-    let bodyContent  = "# Templates";
+    let bodyContent  = "## Templates";
 
     for (const f of fullQualityZip) { 
         
