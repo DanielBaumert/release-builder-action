@@ -12248,13 +12248,13 @@ console.log("== Run ==")
 
 const dir = core.getInput("dir");
 
-const rootDir = path.join(process.env.GITHUB_WORKSPACE, dir);
-
 console.log("Input: ")
-console.log("Dir: " + dir);
+console.log("   Dir: " + dir);
+console.log("Programm: ")
+const rootDir = path.join(process.env.GITHUB_WORKSPACE, dir);
+console.log("   rootDir: " + rootDir);
 
-
-if(!fs.exists(rootDir)){ 
+if(!fs.existsSync(rootDir)){ 
     console.log(rootDir + " - Not Found");
     return;
 }
