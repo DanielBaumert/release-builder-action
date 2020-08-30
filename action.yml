@@ -1,0 +1,9 @@
+name: 'Zpper Flipper'
+description: 'Create zip's from the sub folders of the root folder'
+inputs:
+  dir:  # id of input
+    description: 'Root folder for zipping sub folders'
+    required: true
+runs:
+  using: 'node12'
+  main: 'index.js'
