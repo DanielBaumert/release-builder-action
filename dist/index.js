@@ -12249,7 +12249,8 @@ const github = new GitHub(process.env.GITHUB_TOKEN);
 
     const dir = core.getInput("dir", { required: true });
     const root = path.join(process.env.GITHUB_WORKSPACE, dir);
-
+ 
+    
     console.log("Input: ");
     console.log("    dir: " + dir);
 
