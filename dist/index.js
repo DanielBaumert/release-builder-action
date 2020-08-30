@@ -12271,13 +12271,14 @@ fs.readdirSync(rootDir, (err, files) => {
     if(err) { 
         return console.log('Unable to scan directory: ' + err );
     }
-
+    console.log("   files: " + files);
     files.forEach((file) =>  { 
 
         const fStats = fs.lstatSync(file);
 
         if(fStats.isDirectory()) { 
             const zipFilePath = file + ".zip";
+            console.log("   zipFilePath: " + zipFilePath);
             // zip
             try { 
                 fs.accessSync(file, fs.constants.F_OK);
@@ -12293,6 +12294,7 @@ fs.readdirSync(rootDir, (err, files) => {
             zipArchive.pipe(output);
             zipArchive.directory(file, false);
             zipArchive.finalize();
+            console.log(" ");
         }
     });
 });
