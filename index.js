@@ -31,36 +31,31 @@ if(!stats.isDirectory) {
     console.log(dir + " - Is not a directory");
 }
 
+let fileObject = fs.readdirSync(rootDir);
 
-fs.readdirSync(rootDir, (err, files) => { 
+console.log("   Current directory filenames:"); 
 
-    if(err) { 
-        return console.log('Unable to scan directory: ' + err );
-    }
-    console.log("   files: " + files);
-    files.forEach((file) =>  { 
+fileObject.forEach(file => { 
+    const fStats = fs.lstatSync(file);
 
-        const fStats = fs.lstatSync(file);
-
-        if(fStats.isDirectory()) { 
-            const zipFilePath = file + ".zip";
-            console.log("   zipFilePath: " + zipFilePath);
-            // zip
-            try { 
-                fs.accessSync(file, fs.constants.F_OK);
-                fs.accessSync(zipFilePath, fs.constants.F_OK);
-            } catch {
-                console.log("can not access the zip");
-                return;
-            }
-
-            var output = fs.createWriteStream(zipFilePath);
-
-            var zipArchive = archiver('zip');
-            zipArchive.pipe(output);
-            zipArchive.directory(file, false);
-            zipArchive.finalize();
-            console.log(" ");
+    if(fStats.isDirectory()) { 
+        const zipFilePath = file + ".zip";
+        console.log("   zipFilePath: " + zipFilePath);
+        // zip
+        try { 
+            fs.accessSync(file, fs.constants.F_OK);
+            fs.accessSync(zipFilePath, fs.constants.F_OK);
+        } catch {
+            console.log("can not access the zip");
+            return;
         }
-    });
+
+        var output = fs.createWriteStream(zipFilePath);
+
+        var zipArchive = archiver('zip');
+        zipArchive.pipe(output);
+        zipArchive.directory(file, false);
+        zipArchive.finalize();
+        console.log(" ");
+    }
 });
