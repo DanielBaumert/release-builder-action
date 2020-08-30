@@ -34,7 +34,9 @@ let fileObjects = fs.readdirSync(rootDir);
 console.log("   Current directory filenames:"); 
 
 fullQualityPaths = fileObjects.map(file => { 
-    console.log("File: " + file + " Path: " + normilizePath(file))
+    let filePath = normilizePath(file);
+    console.log("       File: " + file + " Path: " + filePath);
+    return filePath;
 });
 
 fullQualityPaths.forEach(file => { 
@@ -80,6 +82,5 @@ function normilizePath(filePath) {
 
 function isDir(filePath) { 
     let fsStats = fs.lstatSync(filePath);
-    console.log("       Is dir:" + filePath + " - " + fsStats.isDirectory());
     return fsStats.isDirectory();
 }
