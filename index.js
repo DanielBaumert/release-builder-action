@@ -21,14 +21,12 @@ const rootDir = path.join(process.env.GITHUB_WORKSPACE, dir);
 console.log("   rootDir: " + rootDir);
 
 if(!fs.existsSync(rootDir)){ 
-    console.log(rootDir + " - Not Found");
+    console.log("   " + rootDir + " - Not Found");
     return;
 }
 
-const stats = fs.lstatSync(rootDir);
-
-if(!stats.isDirectory) { 
-    console.log(dir + " - Is not a directory");
+if(!isDir(rootDir)) { 
+    console.log("   " + dir + " - Is not a directory");
 }
 
 let fileObject = fs.readdirSync(rootDir);
@@ -36,26 +34,30 @@ let fileObject = fs.readdirSync(rootDir);
 console.log("   Current directory filenames:"); 
 
 fileObject.forEach(file => { 
-    const fStats = fs.lstatSync(file);
-
-    if(fStats.isDirectory()) { 
-        const zipFilePath = file + ".zip";
-        console.log("   zipFilePath: " + zipFilePath);
-        // zip
-        try { 
-            fs.accessSync(file, fs.constants.F_OK);
-            fs.accessSync(zipFilePath, fs.constants.F_OK);
-        } catch {
-            console.log("can not access the zip");
-            return;
-        }
-
-        var output = fs.createWriteStream(zipFilePath);
-
-        var zipArchive = archiver('zip');
-        zipArchive.pipe(output);
-        zipArchive.directory(file, false);
-        zipArchive.finalize();
-        console.log(" ");
+    if(!isDir(file)) { 
+        return;
     }
+
+    const zipFilePath = file + ".zip";
+    console.log("   zipFilePath: " + zipFilePath);
+    // zip
+    try { 
+        fs.accessSync(file, fs.constants.F_OK);
+        fs.accessSync(zipFilePath, fs.constants.F_OK);
+    } catch {
+        console.log("   can not access the zip");
+        return;
+    }
+
+    var output = fs.createWriteStream(zipFilePath);
+
+    var zipArchive = archiver('zip');
+    zipArchive.pipe(output);
+    zipArchive.directory(file, false);
+    zipArchive.finalize();
+    console.log(" ");
 });
+
+function isDir(path) { 
+    return fs.lstatSync(rootDir).isDirectory();
+}
