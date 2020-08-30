@@ -12357,7 +12357,7 @@ const octokit = github.getOctokit(process.env.GITHUB_TOKEN);
             file: fs.readFileSync(f)
         });
 
-        bodyContent += `\n\t-[${fileName}](${uploadAsset.url})`;
+        bodyContent += `\n- [${fileName}](${uploadAsset.url})`;
     }
 
     const { owner, repo } = github.context.repo;
