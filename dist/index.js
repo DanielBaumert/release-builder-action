@@ -12272,10 +12272,18 @@ let fullQualityPaths = fileObjects.map(file => {
     console.log("       File: " + file + " Path: " + filePath);
     return filePath;
 });
+console.log("   CRun:"); 
 
-fullQualityPaths.forEach(filePath => { 
+fullQualityPaths.forEach(filePath => {
+    console.log("       Current file: "  + filePath);
 
-    console.log("       "  + filePath + " - Is not a directory -> skip");
+    // check if folder
+    let fsStats = fs.lstatSync(filePath);
+    if(!fsStats.isDirectory()){ 
+        console.log("       Is not a directory -> skip");
+        return;
+    }
+
     // if(!isDir(filePath)) { 
     //     return;
     // }
