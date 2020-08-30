@@ -31,14 +31,14 @@ let fileObjects = fs.readdirSync(rootDir);
 
 console.log("    Current directory filenames:"); 
 
-let fullQualityPaths = fileObjects.map(file => { 
+let fullQualityPaths = fileObjects.map(function(file) { 
     let filePath = normilizePath(file);
     console.log("        File: " + file + " Path: " + filePath);
     return filePath;
 });
-console.log("    Run:"); 
+console.log("    Run:");
 
-fullQualityPaths.forEach(filePath => {
+fullQualityPaths.forEach(function(filePath) {
     console.log("        Current file: "  + filePath);
 
     // check if folder
