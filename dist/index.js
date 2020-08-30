@@ -12244,19 +12244,25 @@ const github = __webpack_require__(145);
 /// Code
 ///
 
+console.log("== Run ==")
+
 const dir = core.getInput("dir");
 
 const rootDir = path.join(process.env.GITHUB_WORKSPACE, dir);
 
+console.log("Input: ")
+console.log("Dir: " + dir);
+
+
 if(!fs.exists(rootDir)){ 
-    console.log(`${rootDir} (Not Found)`);
+    console.log(rootDir + " - Not Found");
     return;
 }
 
 const stats = fs.lstatSync(rootDir);
 
 if(!stats.isDirectory) { 
-    console.log(`${dir} (Is not a directory)`);
+    console.log(dir + " - Is not a directory");
 }
 
 
