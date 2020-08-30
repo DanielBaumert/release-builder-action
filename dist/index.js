@@ -12268,12 +12268,14 @@ let fileObject = fs.readdirSync(rootDir);
 console.log("   Current directory filenames:"); 
 
 fileObject.forEach(file => { 
+    file = path.join(process.env.GITHUB_WORKSPACE, file);
+
     if(!isDir(file)) { 
         console.log("       "  + file + " - Is not a directory -> skip");
         return;
     }
 
-    const zipFilePath = path.join(process.env.GITHUB_WORKSPACE, file + ".zip");
+    const zipFilePath = file + ".zip";
     console.log("       zipFilePath: " + zipFilePath);
     // zip
     try { 
@@ -12300,9 +12302,7 @@ fileObject.forEach(file => {
 });
 
 function isDir(path) { 
-    let fsStats = fs.lstatSync(rootDir);
-    console.log("       Is file:" + path + " -> " + fsStats.isFile());
-    return !fsStats.isFile();
+    return fs.lstatSync(rootDir).isDirectory();
 }
 
 /***/ }),
