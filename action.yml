@@ -1,11 +1,10 @@
 name: "Zpper Flipper"
 description: "Create zips from the sub folders of the root folder"
 inputs:
-  dir:  # id of input
+  dir:
     description: "Root folder for zipping sub folders"
     required: true
-  tag_name:
-    description: 'The name of the tag. This should come from the webhook payload, `github.GITHUB_REF` when a user pushes a new tag'
+  upload_url:
     required: true
 runs:
   using: "node12"

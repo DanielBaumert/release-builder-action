@@ -16,13 +16,17 @@ const octokit = github.getOctokit(process.env.GITHUB_TOKEN);
     const dir = core.getInput("dir", { required: true });
     const root = path.join(process.env.GITHUB_WORKSPACE, dir);
 
-    const tagName = core.getInput('tag_name', { required: true }).replace('refs/tags/', '');
-    const releaseName = tagName;
+    // const tagName = core.getInput('tag_name', { required: true }).replace('refs/heads/', '');
+    // const releaseName = tagName;
+
+    const uploadUrl = core.getInput('upload_url', { required: true});
 
     console.log("Input: ");
     console.log("    dir: " + dir);
-    console.log("    tag: " + tagName);
-    console.log("    releaseName: " + releaseName);
+    // console.log("    tag: " + tagName);
+    // console.log("    releaseName: " + releaseName);
+    console.log("    uploadUrl: " + uploadUrl);
+
 
     console.log("Programm: ");
 
@@ -95,31 +99,6 @@ const octokit = github.getOctokit(process.env.GITHUB_TOKEN);
         return fZip;
     });
 
-
-    const { owner, repo } = github.context.repo;
-  
-    const body = "";
-
-
-    const createReleaseResponse = await octokit.repos.createRelease({
-        owner,
-        repo,
-        tag_name: tagName,
-        name: releaseName,
-        body: /* bodyFileContent || */ body,
-        draft: false,
-        prerelease: false,
-        commitish: github.context.sha
-    });
-
-    const {
-        data: { 
-            id: releaseId, 
-            html_url: htmlUrl, 
-            upload_url: uploadUrl 
-        }
-    } = createReleaseResponse;
-
     fullQualityZip.forEach(async f => { 
 
         if(f == null) { 
@@ -137,11 +116,5 @@ const octokit = github.getOctokit(process.env.GITHUB_TOKEN);
             name: path.basename(f),
             file: fs.readFileSync(f)
         });
-
-        const {
-            data: { browser_download_url: browserDownloadUrl }
-        } = uploadAssetResponse;
-
-        core.setOutput('browser_download_url', browserDownloadUrl);
     });
 })();
