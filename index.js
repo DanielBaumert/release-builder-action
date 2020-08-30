@@ -35,24 +35,24 @@ console.log("   Current directory filenames:");
 
 fileObject.forEach(file => { 
     if(!isDir(file)) { 
-        console.log("   "  + file + " - is not a directory -> skip");
+        console.log("       "  + file + " - Is not a directory -> skip");
         return;
     }
 
     const zipFilePath = path.join(process.env.GITHUB_WORKSPACE, file + ".zip");
-    console.log("   zipFilePath: " + zipFilePath);
+    console.log("       zipFilePath: " + zipFilePath);
     // zip
     try { 
         fs.accessSync(file, fs.constants.F_OK);
     } catch {
-        console.log("    " + file + " - Can not access the directory");
+        console.log("       " + file + " - Can not access the directory");
         return;
     }
 
     try  { 
         fs.accessSync(zipFilePath, fs.constants.F_OK);
     } catch { 
-        console.log("    " + zipArchive + "- Can not access the zip");
+        console.log("       " + zipArchive + "- Can not access the zip");
         return;
     }
 
@@ -66,5 +66,7 @@ fileObject.forEach(file => {
 });
 
 function isDir(path) { 
-    return fs.lstatSync(rootDir).isDirectory();
+    let fsStats = fs.lstatSync(rootDir);
+    console.log("       " + path + ": " + fsStats.isDirectory());
+    return fsStats.isDirectory();
 }
