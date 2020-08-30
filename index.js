@@ -26,8 +26,8 @@ const octokit = github.getOctokit(process.env.GITHUB_TOKEN);
     console.log("    dir: " + dir);
     // console.log("    tag: " + tagName);
     // console.log("    releaseName: " + releaseName);
-    console.log("    htmlUrl: " + htmlUrl);
-    console.log("    releaseId: " + releaseId);
+    // console.log("    htmlUrl: " + htmlUrl);
+    // console.log("    releaseId: " + releaseId);
     
     
 
