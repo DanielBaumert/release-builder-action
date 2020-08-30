@@ -12285,6 +12285,11 @@ fileObject.forEach(file => {
         return;
     }
 
+    if(!fs.existsSync(zipFilePath)){ 
+        let fd = fs.openSync(zipFilePath, "w");
+        fs.closeSync(fd);
+    }
+
     try  { 
         fs.accessSync(zipFilePath, fs.constants.F_OK);
     } catch { 
@@ -12302,7 +12307,7 @@ fileObject.forEach(file => {
 });
 
 function isDir(path) { 
-    return fs.lstatSync(rootDir).isDirectory();
+    return fs.lstatSync(path).isDirectory();
 }
 
 /***/ }),
