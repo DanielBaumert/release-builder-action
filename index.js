@@ -131,7 +131,7 @@ const octokit = github.getOctokit(process.env.GITHUB_TOKEN);
         const uploadAssetResponse = await octokit.repos.uploadReleaseAsset({
             url: uploadUrl,
             headers,
-            name: assetName,
+            name: path.basename(f),
             file: fs.readFileSync(f)
         });
 
