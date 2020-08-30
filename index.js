@@ -113,19 +113,19 @@ const octokit = github.getOctokit(process.env.GITHUB_TOKEN);
             'content-length': fs.statSync(f).size 
         };
         
-        const uploadAsset = await octokit.repos.uploadReleaseAsset({
+        const uploadAsset = await octokit.repos.uploadReleaseAsset( {
             url: uploadUrl,
             headers,
             name: fileName,
             file: fs.readFileSync(f)
         });
 
-        bodyContent += `\n\t-[${fileName}](${uploadAsset.url})`
+        bodyContent += `\n\t-[${fileName}](${uploadAsset.url})`;
     }
-
-    await octokit.repos.updateRelease( { 
-        url: uploadUrl,
-        body: bodyContent
-    });
+    console.log(bodyContent);
+    //await octokit.repos.updateRelease( { 
+     //   url: uploadUrl,
+     //   body: bodyContent
+    //});
 
 })();
