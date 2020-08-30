@@ -12270,6 +12270,7 @@ let fullQualityPaths = fileObjects.map(function(file) {
     console.log("        File: " + file + " Path: " + filePath);
     return filePath;
 });
+
 console.log("    Run:");
 
 fullQualityPaths.forEach(function(filePath) {
