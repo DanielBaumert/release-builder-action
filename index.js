@@ -36,7 +36,7 @@ fs.readdirSync(rootDir, (err, files) => {
 
         const fStats = fs.lstatSync(file);
 
-        if(fStats.isDirectory) { 
+        if(fStats.isDirectory()) { 
             const zipFilePath = file + ".zip";
             // zip
             try { 
