@@ -64,7 +64,7 @@ const octokit = github.getOctokit(process.env.GITHUB_TOKEN);
     const fullQualityDir = fullQualityPaths.filter(f => fs.statSync(f).isDirectory());
 
     const fullQualityZip = fullQualityDir.map(f => { 
-        console.log("        Current directory: "  + f);
+        console.log("        Current directory for zip: "  + f);
 
         let fZip = f + ".zip";  
         try { 
@@ -106,7 +106,7 @@ const octokit = github.getOctokit(process.env.GITHUB_TOKEN);
         if(f === null) { 
             continue;
         }
-
+        console.log("        Current zip: "  + f);
         const fileName = path.basename(f);
         const headers = { 
             'content-type': "application/zip", 
