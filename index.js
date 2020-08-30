@@ -38,7 +38,7 @@ fileObject.forEach(file => {
         return;
     }
 
-    const zipFilePath = file + ".zip";
+    const zipFilePath = path.join(process.env.GITHUB_WORKSPACE, file + ".zip");
     console.log("   zipFilePath: " + zipFilePath);
     // zip
     try { 
