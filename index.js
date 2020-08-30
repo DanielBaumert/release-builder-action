@@ -41,10 +41,10 @@ let fullQualityPaths = fileObjects.map(file => {
 
 fullQualityPaths.forEach(filePath => { 
 
-    if(!isDir(filePath)) { 
-        console.log("       "  + filePath + " - Is not a directory -> skip");
-        return;
-    }
+    console.log("       "  + filePath + " - Is not a directory -> skip");
+    // if(!isDir(filePath)) { 
+    //     return;
+    // }
     // // zip
     // try { 
     //     fs.accessSync(file, fs.constants.F_OK);
