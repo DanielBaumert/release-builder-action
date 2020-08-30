@@ -12249,13 +12249,13 @@ console.log("== Run ==")
 const dir = core.getInput("dir");
 
 console.log("Input: ")
-console.log("\tDir: " + dir);
+console.log("    Dir: " + dir);
 console.log("Programm: ")
 const rootDir = normilizePath(dir);
-console.log("\ŧrootDir: " + rootDir);
+console.log("    rootDir: " + rootDir);
 
 if(!fs.existsSync(rootDir)){ 
-    console.log("\t" + rootDir + " - Not Found");
+    console.log("    " + rootDir + " - Not Found");
     return;
 }
 
@@ -12263,17 +12263,17 @@ if(!fs.existsSync(rootDir)){
 
 let fileObjects = fs.readdirSync(rootDir);
 
-console.log("\tCurrent directory filenames:"); 
+console.log("    Current directory filenames:"); 
 
 let fullQualityPaths = fileObjects.map(file => { 
     let filePath = normilizePath(file);
-    console.log("\t\tFile: " + file + " Path: " + filePath);
+    console.log("        File: " + file + " Path: " + filePath);
     return filePath;
 });
-console.log("\ŧRun:"); 
+console.log("    Run:"); 
 
 fullQualityPaths.forEach(filePath => {
-    console.log("\t\tCurrent file: "  + filePath);
+    console.log("        Current file: "  + filePath);
 
     // check if folder
     // let fsStats = fs.lstatSync(filePath);
