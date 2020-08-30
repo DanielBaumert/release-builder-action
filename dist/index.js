@@ -12297,7 +12297,7 @@ fullQualityDir.forEach(f => {
             return;
         }
 
-        fs.access(fZip, fs.constants.F_OK | fs.constants, (err) => { 
+        fs.access(fZip, fs.constants.F_OK | fs.constants.W_OK, (err) => { 
             if(err) { 
                 console.error("        Could not acces the " + fZip);
                 return;
