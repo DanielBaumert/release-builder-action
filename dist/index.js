@@ -12253,7 +12253,7 @@ console.log("Input: ")
 console.log("    Dir: " + dir);
 console.log("Programm: ")
 
-if(!fs.existsSync(rootDir)){ 
+if(!fs.existsSync(root)){ 
     console.error("    " + rootDir + " - Not Found");
     return;
 }
