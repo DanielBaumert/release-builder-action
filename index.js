@@ -24,9 +24,9 @@ if(!fs.existsSync(rootDir)){
     console.log("   " + rootDir + " - Not Found");
     return;
 }
-
 if(!isDir(rootDir)) { 
     console.log("   " + dir + " - Is not a directory");
+    return;
 }
 
 let fileObject = fs.readdirSync(rootDir);
