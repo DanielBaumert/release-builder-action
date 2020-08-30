@@ -12267,16 +12267,16 @@ let fileObjects = fs.readdirSync(rootDir);
 
 console.log("   Current directory filenames:"); 
 
-fullQualityPaths = fileObjects.map(file => { 
+let fullQualityPaths = fileObjects.map(file => { 
     let filePath = normilizePath(file);
     console.log("       File: " + file + " Path: " + filePath);
     return filePath;
 });
 
-fullQualityPaths.forEach(file => { 
+fullQualityPaths.forEach(filePath => { 
 
-    if(!isDir(file)) { 
-        console.log("       "  + file + " - Is not a directory -> skip");
+    if(!isDir(filePath)) { 
+        console.log("       "  + filePath + " - Is not a directory -> skip");
         return;
     }
     // // zip
