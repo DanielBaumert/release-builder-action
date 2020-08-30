@@ -65,8 +65,13 @@ fullQualityDir.forEach(f => {
 
         fs.access(fZip, fs.constants.F_OK | fs.constants.W_OK, (err) => { 
             if(err) { 
-                console.error("        Could not acces the " + fZip);
-                return;
+                if(err.code === 'ENOENT') { 
+                    var fd = fs.openSync(fZip, "w");
+                    fs.closeSync(fd);
+                } else { 
+                    console.error("        Could not acces the " + fZip);
+                    return;
+                }                
             }
 
             var output = fs.createWriteStream(fZip);
