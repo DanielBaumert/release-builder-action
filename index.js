@@ -16,7 +16,7 @@ const octokit = github.getOctokit(process.env.GITHUB_TOKEN);
     const dir = core.getInput("dir", { required: true });
     const root = path.join(process.env.GITHUB_WORKSPACE, dir);
 
-    const tagName = core.getInput('tag_name', { required: true }).replace('refs/heads/', '');
+    const tagName = core.getInput('tag_name', { required: true }).replace('refs/tags/', '');
     const releaseName = tagName;
 
     console.log("Input: ");
