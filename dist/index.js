@@ -12273,7 +12273,9 @@ let fullQualityPaths = fileObjects.map(function(file) {
 
 console.log("    Run:");
 
-for (filePath in fullQualityPaths) { 
+for (var iFilePath in fullQualityPaths) { 
+    var filePath = fullQualityPaths[iFilePath];
+    
     console.log("        Current file: "  + filePath);
 
     // check if folder
