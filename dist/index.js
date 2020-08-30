@@ -12339,8 +12339,7 @@ const octokit = github.getOctokit(process.env.GITHUB_TOKEN);
         name: releaseName,
         body: /*bodyFileContent || */ body,
         draft: false,
-        prerelease: false,
-        target_commitish: commitish
+        prerelease: false
     });
 
     const {
