@@ -103,7 +103,7 @@ const octokit = github.getOctokit(process.env.GITHUB_TOKEN);
         repo,
         tag_name: tagName,
         name: releaseName,
-        body: /*bodyFileContent || */ body,
+        body: /* bodyFileContent || */ body,
         draft: false,
         prerelease: false
     });
