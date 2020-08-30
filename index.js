@@ -101,7 +101,7 @@ const octokit = github.getOctokit(process.env.GITHUB_TOKEN);
     const createReleaseResponse = await octokit.repos.createRelease({
         owner,
         repo,
-        tag_name: tag,
+        tag_name: tagName,
         name: releaseName,
         body: /*bodyFileContent || */ body,
         draft: false,
