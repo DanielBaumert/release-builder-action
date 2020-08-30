@@ -12265,7 +12265,7 @@ let fileObjects = fs.readdirSync(rootDir);
 
 console.log("    Current directory filenames:"); 
 
-let fullQualityPaths = fileObjects.map(function(file) { 
+let fullQualityPaths = fileObjects.map(file => { 
     let filePath = normilizePath(file);
     console.log("        File: " + file + " Path: " + filePath);
     return filePath;
@@ -12273,7 +12273,7 @@ let fullQualityPaths = fileObjects.map(function(file) {
 
 console.log("    Run:");
 
-fullQualityPaths.forEach(function(filePath) {
+fullQualityPaths.forEach(filePath => {
     console.log("        Current file: "  + filePath);
 
     // check if folder
@@ -12281,7 +12281,7 @@ fullQualityPaths.forEach(function(filePath) {
     if(!fsStats.isDirectory()){ 
         console.log("        Is not a directory -> skip");
     } else { 
-        
+
     }
 });
 //     // if(!isDir(filePath)) { 
