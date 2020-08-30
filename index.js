@@ -42,10 +42,10 @@ const fileObjects = fs.readdirSync(root);
 
 console.log("    Current directory filenames:"); 
 
-const fullQualityPaths = fileObjects.map(file => { 
-    let filePath = normilizePath(file);
-    console.log("        File: " + file + " Path: " + filePath);
-    return filePath;
+const fullQualityPaths = fileObjects.map(f => { 
+    let fPath = normilizePath(f);
+    console.log("        File: " + f + " Path: " + fPath);
+    return fPath;
 });
 
 console.log("    Run:");
@@ -54,6 +54,31 @@ const fullQualityDir = fullQualityPaths.filter(f => fs.statSync(f).isDirectory()
 
 fullQualityDir.forEach(f => { 
     console.log("        Current directory: "  + f);
+
+    let fZip = f + ".zip";  
+
+    fs.access(f, fs.constants.F_OK, (err) => { 
+        if(err) { 
+            console.error("        Could not acces the " + f);
+            return;
+        }
+
+        fs.access(fZip, fs.constants.F_OK | fs.constants, (err) => { 
+            if(err) { 
+                console.error("        Could not acces the " + fZip);
+                return;
+            }
+
+            var output = fs.createWriteStream(fZip);
+
+            var zipArchive = archiver('zip');
+            zipArchive.pipe(output);
+            zipArchive.directory(f, false);
+            zipArchive.finalize();
+            console.log(" ");
+
+        });
+    });
 });
 
 // fullQualityPaths.forEach(filePath => {
