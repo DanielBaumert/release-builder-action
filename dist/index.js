@@ -12237,9 +12237,9 @@ const path = __webpack_require__(622);
 const archiver = __webpack_require__(168);
 
 const core = __webpack_require__(707);
-const { GitHub, context } = __webpack_require__(145);
+const github = __webpack_require__(145);
 
-const github = new GitHub(process.env.GITHUB_TOKEN);
+const octokit = github.getOctokit(process.env.GITHUB_TOKEN);
 
 ///
 /// Code
@@ -12250,7 +12250,7 @@ const github = new GitHub(process.env.GITHUB_TOKEN);
     const dir = core.getInput("dir", { required: true });
     const root = path.join(process.env.GITHUB_WORKSPACE, dir);
  
-    
+
     console.log("Input: ");
     console.log("    dir: " + dir);
 
@@ -12326,13 +12326,13 @@ const github = new GitHub(process.env.GITHUB_TOKEN);
     });
 
 
-    const { owner, repo } = context.repo;
+    const { owner, repo } = github.context.repo;
     const tagName = core.getInput('tag_name', { required: true });
     const releaseName = tagName;
     const body = "";
 
 
-    const createReleaseResponse = await github.repos.createRelease({
+    const createReleaseResponse = await octokit.repos.createRelease({
         owner,
         repo,
         tag_name: tag,
@@ -12362,7 +12362,7 @@ const github = new GitHub(process.env.GITHUB_TOKEN);
             'content-length': fs.statSync(f).size 
         };
 
-        const uploadAssetResponse = await github.repos.uploadReleaseAsset({
+        const uploadAssetResponse = await octokit.repos.uploadReleaseAsset({
             url: uploadUrl,
             headers,
             name: assetName,
