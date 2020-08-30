@@ -12253,14 +12253,22 @@ console.log("Input: ")
 console.log("    Dir: " + dir);
 console.log("Programm: ")
 
+// check dir input
 if(!fs.existsSync(root)){ 
-    console.error("    " + rootDir + " - Not Found");
+    console.error("    " + root + " - Not Found");
     return;
 }
 
+let fsStats = fs.lstatSync(root);
+if(!fsStats.isDirectory()){
+    console.error("    " + root + " - Is not a directory");
+    return;
+}
+
+
 const normilizePath = (filePath) => path.join(root, filePath);
 
-console.log("    rootDir: " + rootDir);
+console.log("    rootDir: " + root);
 
 /*TODO check if dir*/
 
