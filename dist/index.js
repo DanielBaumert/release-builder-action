@@ -12308,13 +12308,13 @@ fullQualityPaths.forEach(file => {
     // console.log(" ");
 });
 
-function normilizePath(path) { 
-    return path.join(process.env.GITHUB_WORKSPACE, path);
+function normilizePath(filePath) { 
+    return path.join(process.env.GITHUB_WORKSPACE, filePath);
 }
 
-function isDir(path) { 
-    let fsStats = fs.lstatSync(path);
-    console.log("       Is dir:" + path + " - " + fsStats.isDirectory());
+function isDir(filePath) { 
+    let fsStats = fs.lstatSync(filePath);
+    console.log("       Is dir:" + filePath + " - " + fsStats.isDirectory());
     return fsStats.isDirectory();
 }
 
