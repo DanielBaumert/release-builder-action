@@ -12307,8 +12307,8 @@ fileObject.forEach(file => {
 
 function isDir(path) { 
     let fsStats = fs.lstatSync(path);
-    console.log("       Is dir:" +  path + " - " + fsStats.isDirectory());
-    return fs.lstatSync(path).isDirectory();
+    console.log("       Is dir:" + path + " - " + fsStats.isDirectory());
+    return fsStats.isDirectory();
 }
 
 /***/ }),
