@@ -39,17 +39,14 @@ let fullQualityPaths = fileObjects.map(file => {
 
 console.log("    Run:");
 
-fullQualityPaths.forEach(filePath => {
+fullQualityPaths.filter(f => { 
+    fs.statSync(f).isDirectory()
+}).forEach(f => { 
     console.log("        Current file: "  + filePath);
-
-    // check if folder
-    let fsStats = fs.lstatSync(filePath);
-    if(!fsStats.isDirectory()){ 
-        console.log("            Is not a directory -> skip");
-    } else { 
-        console.log("            Is a directory");
-    }
 });
+
+// fullQualityPaths.forEach(filePath => {
+
 //     // if(!isDir(filePath)) { 
 //     //     return;
 //     // }
