@@ -12247,25 +12247,28 @@ const github = __webpack_require__(145);
 console.log("== Run ==")
 
 const dir = core.getInput("dir");
+const root = path.join(process.env.GITHUB_WORKSPACE, dir);
 
 console.log("Input: ")
 console.log("    Dir: " + dir);
 console.log("Programm: ")
-const rootDir = normilizePath(dir);
-console.log("    rootDir: " + rootDir);
 
 if(!fs.existsSync(rootDir)){ 
-    console.log("    " + rootDir + " - Not Found");
+    console.error("    " + rootDir + " - Not Found");
     return;
 }
 
+const normilizePath = (filePath) => path.join(root, filePath);
+
+console.log("    rootDir: " + rootDir);
+
 /*TODO check if dir*/
 
-let fileObjects = fs.readdirSync(rootDir);
+const fileObjects = fs.readdirSync(root);
 
 console.log("    Current directory filenames:"); 
 
-let fullQualityPaths = fileObjects.map(file => { 
+const fullQualityPaths = fileObjects.map(file => { 
     let filePath = normilizePath(file);
     console.log("        File: " + file + " Path: " + filePath);
     return filePath;
@@ -12273,7 +12276,7 @@ let fullQualityPaths = fileObjects.map(file => {
 
 console.log("    Run:");
 
-let fullQualityDir = fullQualityPaths.filter(f => { fs.statSync(f).isDirectory()});
+const fullQualityDir = fullQualityPaths.filter(f => fs.statSync(f).isDirectory());
 
 fullQualityDir.forEach(f => { 
     console.log("        Current directory: "  + filePath);
@@ -12314,10 +12317,6 @@ fullQualityDir.forEach(f => {
 //     // zipArchive.finalize();
 //     // console.log(" ");
 // });
-
-function normilizePath(filePath) { 
-    return path.join(process.env.GITHUB_WORKSPACE, filePath);
-}
 
 /***/ }),
 
