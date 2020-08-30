@@ -42,7 +42,7 @@ fullQualityPaths.forEach(filePath => {
     console.log("        Current file: "  + filePath);
 
     // check if folder
-    // let fsStats = fs.lstatSync(filePath);
+    let fsStats = fs.lstatSync(filePath);
     // if(!fsStats.isDirectory()){ 
     //     console.log("\t\ŧIs not a directory -> skip");
     //     return;
