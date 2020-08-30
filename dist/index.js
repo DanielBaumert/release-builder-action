@@ -12279,9 +12279,9 @@ fullQualityPaths.forEach(filePath => {
     // check if folder
     let fsStats = fs.lstatSync(filePath);
     if(!fsStats.isDirectory()){ 
-        console.log("        Is not a directory -> skip");
+        console.log("            Is not a directory -> skip");
     } else { 
-
+        console.log("            Is a directory");
     }
 });
 //     // if(!isDir(filePath)) { 
