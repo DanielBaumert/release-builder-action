@@ -12263,12 +12263,15 @@ if(!isDir(rootDir)) {
     return;
 }
 
-let fileObject = fs.readdirSync(rootDir);
+let fileObjects = fs.readdirSync(rootDir);
 
 console.log("   Current directory filenames:"); 
 
-fileObject.forEach(file => { 
-    file = path.join(process.env.GITHUB_WORKSPACE, file);
+fullQualityPaths = fileObjects.map(file => { 
+    console.log("File: " + file + " Path: " + normilizePath(file))
+});
+
+fullQualityPaths.forEach(file => { 
 
     if(!isDir(file)) { 
         console.log("       "  + file + " - Is not a directory -> skip");
@@ -12304,6 +12307,10 @@ fileObject.forEach(file => {
     // zipArchive.finalize();
     // console.log(" ");
 });
+
+function normilizePath(path) { 
+    return path.join(process.env.GITHUB_WORKSPACE, path);
+}
 
 function isDir(path) { 
     let fsStats = fs.lstatSync(path);
