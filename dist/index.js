@@ -12269,6 +12269,7 @@ console.log("   Current directory filenames:");
 
 fileObject.forEach(file => { 
     if(!isDir(file)) { 
+        console.log("   "  + file + " - is not a directory -> skip");
         return;
     }
 
@@ -12277,9 +12278,15 @@ fileObject.forEach(file => {
     // zip
     try { 
         fs.accessSync(file, fs.constants.F_OK);
-        fs.accessSync(zipFilePath, fs.constants.F_OK);
     } catch {
-        console.log("   can not access the zip");
+        console.log("    " + file + " - Can not access the directory");
+        return;
+    }
+
+    try  { 
+        fs.accessSync(zipFilePath, fs.constants.F_OK);
+    } catch { 
+        console.log("    " + zipArchive + "- Can not access the zip");
         return;
     }
 
