@@ -42,6 +42,8 @@ module.exports =
 /******/ 		// Load entry module and return exports
 /******/ 		return __webpack_require__(334);
 /******/ 	};
+/******/ 	// initialize runtime
+/******/ 	runtime(__webpack_require__);
 /******/
 /******/ 	// run startup
 /******/ 	return startup();
@@ -12230,146 +12232,155 @@ util.toDosTime = function(d) {
 /***/ }),
 
 /***/ 334:
-/***/ (function(__unusedmodule, __unusedexports, __webpack_require__) {
+/***/ (function(__unusedmodule, __webpack_exports__, __webpack_require__) {
 
-const fs = __webpack_require__(747);
-const path = __webpack_require__(622);
-const archiver = __webpack_require__(168);
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var fs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(747);
+/* harmony import */ var fs__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(fs__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var path__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(622);
+/* harmony import */ var path__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(path__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var archiver__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(168);
+/* harmony import */ var archiver__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(archiver__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(707);
+/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_actions_core__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(145);
+/* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_actions_github__WEBPACK_IMPORTED_MODULE_4__);
 
-const core = __webpack_require__(707);
-const github = __webpack_require__(145);
 
-const octokit = github.getOctokit(process.env.GITHUB_TOKEN);
+
+
+
+
+
+const octokit = Object(_actions_github__WEBPACK_IMPORTED_MODULE_4__.getOctokit)(process.env.GITHUB_TOKEN);
 
 ///
 /// Code
 ///
-(async function() { 
-    console.log("== Run ==");
+(async () => {
+    console.log('== Run ==');
 
-    const dir = core.getInput("dir", { required: true });
-    const root = path.join(process.env.GITHUB_WORKSPACE, dir);
+    const dir = Object(_actions_core__WEBPACK_IMPORTED_MODULE_3__.getInput)('dir', { required: true });
+    const root = Object(path__WEBPACK_IMPORTED_MODULE_1__.join)(process.env.GITHUB_WORKSPACE, dir);
 
     // const tagName = core.getInput('tag_name', { required: true }).replace('refs/heads/', '');
     // const releaseName = tagName;
 
-    const uploadUrl = core.getInput('upload_url', { required: true});
-    const releaseId = core.getInput('release_id', { required: true});
-    
-    console.log("Input: ");
-    console.log("    dir: " + dir);
+    const uploadUrl = Object(_actions_core__WEBPACK_IMPORTED_MODULE_3__.getInput)('upload_url', { required: true });
+    const releaseId = Object(_actions_core__WEBPACK_IMPORTED_MODULE_3__.getInput)('release_id', { required: true });
+
+    console.log('Input: ');
+    console.log(`    dir: ${dir}`);
     // console.log("    tag: " + tagName);
     // console.log("    releaseName: " + releaseName);
     // console.log("    htmlUrl: " + htmlUrl);
     // console.log("    releaseId: " + releaseId);
-    
-    
 
-    console.log("Programm: ");
+    console.log('Programm: ');
 
     // check dir input
-    if(!fs.existsSync(root)){ 
-        console.error("    " + root + " - Not Found");
+    if (!Object(fs__WEBPACK_IMPORTED_MODULE_0__.existsSync)(root)) {
+        console.error(`    ${root} - Not Found`);
         return;
     }
 
-    let fsStats = fs.lstatSync(root);
-    if(!fsStats.isDirectory()){
-        console.error("    " + root + " - Is not a directory");
+    const fsStats = Object(fs__WEBPACK_IMPORTED_MODULE_0__.lstatSync)(root);
+    if (!fsStats.isDirectory()) {
+        console.error(`    ${root} - Is not a directory`);
         return;
     }
 
+    const normilizePath = (filePath) => Object(path__WEBPACK_IMPORTED_MODULE_1__.join)(root, filePath);
 
-    const normilizePath = (filePath) => path.join(root, filePath);
+    console.log(`    rootDir: ${root}`);
 
-    console.log("    rootDir: " + root);
+    /* TODO check if dir */
 
-    /*TODO check if dir*/
+    const fileObjects = Object(fs__WEBPACK_IMPORTED_MODULE_0__.readdirSync)(root);
 
-    const fileObjects = fs.readdirSync(root);
+    console.log('    Current directory filenames:');
 
-    console.log("    Current directory filenames:"); 
-
-    const fullQualityPaths = fileObjects.map(f => { 
-        let fPath = normilizePath(f);
-        console.log("        File: " + f + " Path: " + fPath);
+    const fullQualityPaths = fileObjects.map((f) => {
+        const fPath = normilizePath(f);
+        console.log(`        File: ${f} Path: ${fPath}`);
         return fPath;
     });
 
-    console.log("    Run:");
+    console.log('    Run:');
 
-    const fullQualityDir = fullQualityPaths.filter(f => fs.statSync(f).isDirectory());
+    const fullQualityDir = fullQualityPaths.filter((f) => Object(fs__WEBPACK_IMPORTED_MODULE_0__.statSync)(f).isDirectory());
 
-    const fullQualityZip = fullQualityDir.map(f => { 
-        console.log("        Current directory for zip: "  + f);
+    const fullQualityZip = fullQualityDir.map((f) => {
+        console.log(`        Current directory for zip: ${f}`);
 
-        let fZip = f + ".zip";  
-        try { 
-            fs.accessSync(f, fs.constants.F_OK);
-        } catch (err) { 
-            console.error("        Could not acces the " + f);
+        const fZip = `${f}.zip`;
+        try {
+            Object(fs__WEBPACK_IMPORTED_MODULE_0__.accessSync)(f, fs__WEBPACK_IMPORTED_MODULE_0__.constants.F_OK);
+        } catch (err) {
+            console.error(`        Could not acces the ${f}`);
             return null;
         }
-        
-        try { 
-            fs.accessSync(fZip, fs.constants.F_OK | fs.constants.W_OK);
-        } catch(err)  { 
-            if(err) { 
-                if(err.code === 'ENOENT') { 
-                    var fd = fs.openSync(fZip, "w");
-                    fs.closeSync(fd);
-                } else { 
-                    console.error("        Could not acces the " + fZip);
+
+        try {
+            Object(fs__WEBPACK_IMPORTED_MODULE_0__.accessSync)(fZip, fs__WEBPACK_IMPORTED_MODULE_0__.constants.F_OK | fs__WEBPACK_IMPORTED_MODULE_0__.constants.W_OK);
+        } catch (err) {
+            if (err) {
+                if (err.code === 'ENOENT') {
+                    const fd = Object(fs__WEBPACK_IMPORTED_MODULE_0__.openSync)(fZip, 'w');
+                    Object(fs__WEBPACK_IMPORTED_MODULE_0__.closeSync)(fd);
+                } else {
+                    console.error(`        Could not acces the ${fZip}`);
                     return null;
-                }                
+                }
             }
         }
 
-        var output = fs.createWriteStream(fZip);
-        console.error("        Create zip for " + f);
-        var zipArchive = archiver('zip');
+        const output = Object(fs__WEBPACK_IMPORTED_MODULE_0__.createWriteStream)(fZip);
+        console.error(`        Create zip for ${f}`);
+        const zipArchive = archiver__WEBPACK_IMPORTED_MODULE_2___default()('zip');
         zipArchive.pipe(output);
         zipArchive.directory(f, false);
         zipArchive.finalize();
-        console.error("        Created zip for " + f);
-        
+        console.error(`        Created zip for ${f}`);
+
         return fZip;
     });
 
-    let bodyContent  = "## Templates";
+    let bodyContent = '## Templates';
 
-    for (const f of fullQualityZip) { 
-        
-        if(f === null) { 
+    for (const f of fullQualityZip) {
+        if (!f) {
             continue;
         }
-        console.log("        Current zip: "  + f);
-        const fileName = path.basename(f);
-        const headers = { 
-            'content-type': "application/zip", 
-            'content-length': fs.statSync(f).size 
+
+        console.log(`        Current zip: ${f}`);
+        const fileName = Object(path__WEBPACK_IMPORTED_MODULE_1__.basename)(f);
+        const headers = {
+            'content-type': 'application/zip',
+            'content-length': Object(fs__WEBPACK_IMPORTED_MODULE_0__.statSync)(f).size,
         };
-        
-        const uploadAsset = await octokit.repos.uploadReleaseAsset( {
+
+        const uploadAsset = await octokit.repos.uploadReleaseAsset({
             url: uploadUrl,
             headers,
             name: fileName,
-            file: fs.readFileSync(f)
+            file: Object(fs__WEBPACK_IMPORTED_MODULE_0__.readFileSync)(f),
         });
 
         bodyContent += `\n- [${fileName}](${uploadAsset.url})`;
     }
 
-    const { owner, repo } = github.context.repo;
+    const { owner, repo } = _actions_github__WEBPACK_IMPORTED_MODULE_4__.context.repo;
 
-    await octokit.repos.updateRelease( { 
-        owner: owner,
-        repo: repo,
-        release_id: releaseId, 
-        body: bodyContent
+    await octokit.repos.updateRelease({
+        owner,
+        repo,
+        release_id: releaseId,
+        body: bodyContent,
     });
-
 })();
+
 
 /***/ }),
 
@@ -33271,4 +33282,43 @@ function expand(str, isTop) {
 
 /***/ })
 
-/******/ });
+/******/ },
+/******/ function(__webpack_require__) { // webpackRuntimeModules
+/******/ 	"use strict";
+/******/ 
+/******/ 	/* webpack/runtime/make namespace object */
+/******/ 	!function() {
+/******/ 		// define __esModule on exports
+/******/ 		__webpack_require__.r = function(exports) {
+/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 			}
+/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 		};
+/******/ 	}();
+/******/ 	
+/******/ 	/* webpack/runtime/compat get default export */
+/******/ 	!function() {
+/******/ 		// getDefaultExport function for compatibility with non-harmony modules
+/******/ 		__webpack_require__.n = function(module) {
+/******/ 			var getter = module && module.__esModule ?
+/******/ 				function getDefault() { return module['default']; } :
+/******/ 				function getModuleExports() { return module; };
+/******/ 			__webpack_require__.d(getter, 'a', getter);
+/******/ 			return getter;
+/******/ 		};
+/******/ 	}();
+/******/ 	
+/******/ 	/* webpack/runtime/define property getter */
+/******/ 	!function() {
+/******/ 		// define getter function for harmony exports
+/******/ 		var hasOwnProperty = Object.prototype.hasOwnProperty;
+/******/ 		__webpack_require__.d = function(exports, name, getter) {
+/******/ 			if(!hasOwnProperty.call(exports, name)) {
+/******/ 				Object.defineProperty(exports, name, { enumerable: true, get: getter });
+/******/ 			}
+/******/ 		};
+/******/ 	}();
+/******/ 	
+/******/ }
+);
