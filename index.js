@@ -40,6 +40,8 @@ const octokit = getOctokit(process.env.GITHUB_TOKEN);
 
     const archives = [];
     for (const f of readdirSync(root)) {
+
+        console.log(f);
         
         if(!statSync(f).isDirectory()){
             console.warn(`${f} is not a directory!`);

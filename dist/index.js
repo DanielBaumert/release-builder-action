@@ -12281,6 +12281,8 @@ const octokit = Object(_actions_github__WEBPACK_IMPORTED_MODULE_4__.getOctokit)(
 
     const archives = [];
     for (const f of Object(fs__WEBPACK_IMPORTED_MODULE_0__.readdirSync)(root)) {
+
+        console.log(f);
         
         if(!Object(fs__WEBPACK_IMPORTED_MODULE_0__.statSync)(f).isDirectory()){
             console.warn(`${f} is not a directory!`);
