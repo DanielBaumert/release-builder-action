@@ -3,20 +3,14 @@ import {
     lstatSync,
     readdirSync,
     statSync,
-    accessSync,
-    constants,
-    openSync,
-    closeSync,
     createWriteStream,
     readFileSync,
 } from 'fs';
-import { join, basename } from 'path';
+import { join } from 'path';
 import archiver from 'archiver';
 
 import { getInput, setFailed } from '@actions/core';
 import { getOctokit, context } from '@actions/github';
-import { constant } from './dist';
-import { countReset } from 'console';
 
 const octokit = getOctokit(process.env.GITHUB_TOKEN);
 
@@ -36,7 +30,7 @@ const octokit = getOctokit(process.env.GITHUB_TOKEN);
     console.log('Programm:');
     const root = join(process.env.GITHUB_WORKSPACE, dir);
     if (!existsSync(root)) {
-        return setFailed(`${root} - Not found!`);;
+        return setFailed(`${root} - Not found!`);
     }
 
     const fsStats = lstatSync(root);
@@ -46,16 +40,19 @@ const octokit = getOctokit(process.env.GITHUB_TOKEN);
 
     const archives = [];
     for (const f of readdirSync(root)) {
+        
         if(!statSync(f).isDirectory()){
-            console.warn(`${f} is not a directory!`)
+            console.warn(`${f} is not a directory!`);
             continue;
         }
+
         const fZipName = `${f}.zip`;
         const fPath = join(root, f);
         const fZip = `${fPath}.zip`;
-
+ 
         try {
             const output = createWriteStream(fZip);
+
             const zipArchive = archiver('zip');
             zipArchive.pipe(output);
             zipArchive.directory(f, false);
