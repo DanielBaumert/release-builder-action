@@ -13,8 +13,10 @@ import {
 import { join, basename } from 'path';
 import archiver from 'archiver';
 
-import { getInput } from '@actions/core';
+import { getInput, setFailed } from '@actions/core';
 import { getOctokit, context } from '@actions/github';
+import { constant } from './dist';
+import { countReset } from 'console';
 
 const octokit = getOctokit(process.env.GITHUB_TOKEN);
 
@@ -22,124 +24,68 @@ const octokit = getOctokit(process.env.GITHUB_TOKEN);
 /// Code
 ///
 (async () => {
-    console.log('== Run ==');
-
     const dir = getInput('dir', { required: true });
-    const root = join(process.env.GITHUB_WORKSPACE, dir);
-
-    // const tagName = core.getInput('tag_name', { required: true }).replace('refs/heads/', '');
-    // const releaseName = tagName;
-
-    const uploadUrl = getInput('upload_url', { required: true });
     const releaseId = getInput('release_id', { required: true });
-
-    console.log('Input: ');
+    const uploadUrl = getInput('upload_url', { required: true });
+    
+    console.log('Input:');
     console.log(`    dir: ${dir}`);
-    // console.log("    tag: " + tagName);
-    // console.log("    releaseName: " + releaseName);
-    // console.log("    htmlUrl: " + htmlUrl);
-    // console.log("    releaseId: " + releaseId);
-
-    console.log('Programm: ');
-
-    // check dir input
+    console.log(`    release_id: ${releaseId}`);
+    console.log(`    upload_url: ${uploadUrl}`);
+    
+    console.log('Programm:');
+    const root = join(process.env.GITHUB_WORKSPACE, dir);
     if (!existsSync(root)) {
-        console.error(`    ${root} - Not Found`);
-        return;
+        return setFailed(`${root} - Not found!`);;
     }
 
     const fsStats = lstatSync(root);
     if (!fsStats.isDirectory()) {
-        console.error(`    ${root} - Is not a directory`);
-        return;
+        return setFailed(`${root} - Is not a directory!`);
     }
 
-    const normilizePath = (filePath) => join(root, filePath);
-
-    console.log(`    rootDir: ${root}`);
-
-    /* TODO check if dir */
-
-    const fileObjects = readdirSync(root);
-
-    console.log('    Current directory filenames:');
-
-    const fullQualityPaths = fileObjects.map((f) => {
-        const fPath = normilizePath(f);
-        console.log(`        File: ${f} Path: ${fPath}`);
-        return fPath;
-    });
-
-    console.log('    Run:');
-
-    const fullQualityDir = fullQualityPaths.filter((f) => statSync(f).isDirectory());
-
-    const fullQualityZip = fullQualityDir.map((f) => {
-        console.log(`        Current directory for zip: ${f}`);
-
-        const fZip = `${f}.zip`;
-        try {
-            accessSync(f, constants.F_OK);
-        } catch (err) {
-            console.error(`        Could not acces the ${f}`);
-            return null;
-        }
-
-        try {
-            accessSync(fZip, constants.F_OK | constants.W_OK);
-        } catch (err) {
-            if (err) {
-                if (err.code === 'ENOENT') {
-                    const fd = openSync(fZip, 'w');
-                    closeSync(fd);
-                } else {
-                    console.error(`        Could not acces the ${fZip}`);
-                    return null;
-                }
-            }
-        }
-
-        const output = createWriteStream(fZip);
-        console.error(`        Create zip for ${f}`);
-        const zipArchive = archiver('zip');
-        zipArchive.pipe(output);
-        zipArchive.directory(f, false);
-        zipArchive.finalize();
-        console.error(`        Created zip for ${f}`);
-
-        return fZip;
-    });
-
-    let bodyContent = '## Templates';
-
-    for (const f of fullQualityZip) {
-        if (!f) {
+    const archives = [];
+    for (const f of readdirSync(root)) {
+        if(!statSync(f).isDirectory()){
+            console.warn(`${f} is not a directory!`)
             continue;
         }
+        const fZipName = `${f}.zip`;
+        const fPath = join(root, f);
+        const fZip = `${fPath}.zip`;
 
-        console.log(`        Current zip: ${f}`);
-        const fileName = basename(f);
-        const headers = {
-            'content-type': 'application/zip',
-            'content-length': statSync(f).size,
-        };
+        try {
+            const output = createWriteStream(fZip);
+            const zipArchive = archiver('zip');
+            zipArchive.pipe(output);
+            zipArchive.directory(f, false);
+            zipArchive.finalize();
 
-        const uploadAsset = await octokit.repos.uploadReleaseAsset({
-            url: uploadUrl,
-            headers,
-            name: fileName,
-            file: readFileSync(f),
-        });
+            const headers = {
+                'content-type': 'application/zip',
+                'content-length': statSync(f.fZip).size,
+            };
 
-        bodyContent += `\n- [${fileName}](${uploadAsset.url})`;
+            const uploadAsset = await octokit.repos.uploadReleaseAsset({
+                url: uploadUrl,
+                headers,
+                name: f.fZipName,
+                file: readFileSync(f.fZip),
+            });
+
+            archives.push({fZipName, uploadUrl: uploadAsset.url});
+         }
+         catch(err) { 
+            setFailed(err.message);
+         }
     }
-
+    
     const { owner, repo } = context.repo;
 
     await octokit.repos.updateRelease({
         owner,
         repo,
         release_id: releaseId,
-        body: bodyContent,
+        body: `## Templates${archives.map(a => `\n- [${a.fZipName}](${a.uploadUrl})`)}`,
     });
 })();
