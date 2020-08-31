@@ -12298,19 +12298,19 @@ const octokit = Object(_actions_github__WEBPACK_IMPORTED_MODULE_4__.getOctokit)(
 
             const zipArchive = archiver__WEBPACK_IMPORTED_MODULE_2___default()('zip');
             zipArchive.pipe(output);
-            zipArchive.directory(f, false);
+            zipArchive.directory(fPath, false);
             zipArchive.finalize();
 
             const headers = {
                 'content-type': 'application/zip',
-                'content-length': Object(fs__WEBPACK_IMPORTED_MODULE_0__.statSync)(f.fZip).size,
+                'content-length': Object(fs__WEBPACK_IMPORTED_MODULE_0__.statSync)(fZip).size,
             };
 
             const uploadAsset = await octokit.repos.uploadReleaseAsset({
                 url: uploadUrl,
                 headers,
-                name: f.fZipName,
-                file: Object(fs__WEBPACK_IMPORTED_MODULE_0__.readFileSync)(f.fZip),
+                name: fZipName,
+                file: Object(fs__WEBPACK_IMPORTED_MODULE_0__.readFileSync)(fZip),
             });
 
             archives.push({fZipName, uploadUrl: uploadAsset.url});

@@ -57,19 +57,19 @@ const octokit = getOctokit(process.env.GITHUB_TOKEN);
 
             const zipArchive = archiver('zip');
             zipArchive.pipe(output);
-            zipArchive.directory(f, false);
+            zipArchive.directory(fPath, false);
             zipArchive.finalize();
 
             const headers = {
                 'content-type': 'application/zip',
-                'content-length': statSync(f.fZip).size,
+                'content-length': statSync(fZip).size,
             };
 
             const uploadAsset = await octokit.repos.uploadReleaseAsset({
                 url: uploadUrl,
                 headers,
-                name: f.fZipName,
-                file: readFileSync(f.fZip),
+                name: fZipName,
+                file: readFileSync(fZip),
             });
 
             archives.push({fZipName, uploadUrl: uploadAsset.url});
