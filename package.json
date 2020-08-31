@@ -4,9 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "ncc build index.js && git commit -a -m 'Auto Build' && git push -u origin master && git push --delete origin v1",
-    "delete_v1" : "git push --delete origin v1"
+    "build": "ncc build index.js"
   },
   "repository": {
     "type": "git",
@@ -23,5 +21,11 @@
     "@actions/core": "^1.2.5",
     "@actions/github": "^4.0.0",
     "archiver": "^5.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^7.7.0",
+    "eslint-config-airbnb": "^18.2.0",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-plugin-import": "^2.22.0"
   }
 }
