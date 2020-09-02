@@ -14,9 +14,6 @@ import { getOctokit, context } from '@actions/github';
 
 const octokit = getOctokit(process.env.GITHUB_TOKEN);
 
-///
-/// Code
-///
 (async () => {
     const dir = getInput('dir', { required: true });
     const releaseId = getInput('release_id', { required: true });
@@ -27,52 +24,45 @@ const octokit = getOctokit(process.env.GITHUB_TOKEN);
     console.log(`    release_id: ${releaseId}`);
     console.log(`    upload_url: ${uploadUrl}`);
 
-    console.log('Programm:');
     const root = join(process.env.GITHUB_WORKSPACE, dir);
     if (!existsSync(root)) {
         return setFailed(`${root} - Not found!`);
     }
 
-    const fsStats = lstatSync(root);
-    if (!fsStats.isDirectory()) {
+    if (!lstatSync(root).isDirectory()) {
         return setFailed(`${root} - Is not a directory!`);
     }
 
-    const archives = [];
+    const bodyContent = [];
     for (const f of readdirSync(root)) {
 
         const fPath = join(root, f);
-        console.log(fPath);
 
         if (!statSync(fPath).isDirectory()) {
-            console.warn(`${fPath} is not a directory!`);
+            console.warn(`${fPath} is not a directory and will be skipped!`);
             continue;
         }
 
         const fZipName = `${f}.zip`;
-        const fZip = `${fPath}.zip`;
+        const fZipPath = `${fPath}.zip`;
 
         try {
-            const output = createWriteStream(fZip);
-
             const zipArchive = archiver('zip');
-            zipArchive.pipe(output);
-            zipArchive.directory(fPath, false);
-            zipArchive.finalize();
-
-            const headers = {
-                'content-type': 'application/zip',
-                'content-length': statSync(fZip).size,
-            };
+            zipArchive.pipe(createWriteStream(fZipPath));
+            await zipArchive.directory(fPath, false)
+                            .finalize();
 
             const uploadAsset = await octokit.repos.uploadReleaseAsset({
                 url: uploadUrl,
-                headers,
+                headers: {
+                    'content-type': 'application/zip',
+                    'content-length': statSync(fZipPath).size,
+                },
                 name: fZipName,
-                file: readFileSync(fZip),
+                file: readFileSync(fZipPath),
             });
 
-            archives.push({ fZipName, uploadUrl: uploadAsset.url });
+            bodyContent.push(`\n- [${fZipName}](${uploadAsset.url})`);
         }
         catch (err) {
             return setFailed(err.message);
@@ -85,6 +75,6 @@ const octokit = getOctokit(process.env.GITHUB_TOKEN);
         owner,
         repo,
         release_id: releaseId,
-        body: `## Templates${archives.map(a => `\n- [${a.fZipName}](${a.uploadUrl})`).join('')}`,
+        body: `## Templates${bodyContent.join('')}`,
     });
 })();

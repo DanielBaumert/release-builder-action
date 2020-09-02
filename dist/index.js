@@ -12255,9 +12255,6 @@ __webpack_require__.r(__webpack_exports__);
 
 const octokit = Object(_actions_github__WEBPACK_IMPORTED_MODULE_4__.getOctokit)(process.env.GITHUB_TOKEN);
 
-///
-/// Code
-///
 (async () => {
     const dir = Object(_actions_core__WEBPACK_IMPORTED_MODULE_3__.getInput)('dir', { required: true });
     const releaseId = Object(_actions_core__WEBPACK_IMPORTED_MODULE_3__.getInput)('release_id', { required: true });
@@ -12268,52 +12265,45 @@ const octokit = Object(_actions_github__WEBPACK_IMPORTED_MODULE_4__.getOctokit)(
     console.log(`    release_id: ${releaseId}`);
     console.log(`    upload_url: ${uploadUrl}`);
 
-    console.log('Programm:');
     const root = Object(path__WEBPACK_IMPORTED_MODULE_1__.join)(process.env.GITHUB_WORKSPACE, dir);
     if (!Object(fs__WEBPACK_IMPORTED_MODULE_0__.existsSync)(root)) {
         return Object(_actions_core__WEBPACK_IMPORTED_MODULE_3__.setFailed)(`${root} - Not found!`);
     }
 
-    const fsStats = Object(fs__WEBPACK_IMPORTED_MODULE_0__.lstatSync)(root);
-    if (!fsStats.isDirectory()) {
+    if (!Object(fs__WEBPACK_IMPORTED_MODULE_0__.lstatSync)(root).isDirectory()) {
         return Object(_actions_core__WEBPACK_IMPORTED_MODULE_3__.setFailed)(`${root} - Is not a directory!`);
     }
 
-    const archives = [];
+    const bodyContent = [];
     for (const f of Object(fs__WEBPACK_IMPORTED_MODULE_0__.readdirSync)(root)) {
 
         const fPath = Object(path__WEBPACK_IMPORTED_MODULE_1__.join)(root, f);
-        console.log(fPath);
 
         if (!Object(fs__WEBPACK_IMPORTED_MODULE_0__.statSync)(fPath).isDirectory()) {
-            console.warn(`${fPath} is not a directory!`);
+            console.warn(`${fPath} is not a directory and will be skipped!`);
             continue;
         }
 
         const fZipName = `${f}.zip`;
-        const fZip = `${fPath}.zip`;
+        const fZipPath = `${fPath}.zip`;
 
         try {
-            const output = Object(fs__WEBPACK_IMPORTED_MODULE_0__.createWriteStream)(fZip);
-
             const zipArchive = archiver__WEBPACK_IMPORTED_MODULE_2___default()('zip');
-            zipArchive.pipe(output);
-            zipArchive.directory(fPath, false);
-            zipArchive.finalize();
-
-            const headers = {
-                'content-type': 'application/zip',
-                'content-length': Object(fs__WEBPACK_IMPORTED_MODULE_0__.statSync)(fZip).size,
-            };
+            zipArchive.pipe(Object(fs__WEBPACK_IMPORTED_MODULE_0__.createWriteStream)(fZipPath));
+            await zipArchive.directory(fPath, false)
+                            .finalize();
 
             const uploadAsset = await octokit.repos.uploadReleaseAsset({
                 url: uploadUrl,
-                headers,
+                headers: {
+                    'content-type': 'application/zip',
+                    'content-length': Object(fs__WEBPACK_IMPORTED_MODULE_0__.statSync)(fZipPath).size,
+                },
                 name: fZipName,
-                file: Object(fs__WEBPACK_IMPORTED_MODULE_0__.readFileSync)(fZip),
+                file: Object(fs__WEBPACK_IMPORTED_MODULE_0__.readFileSync)(fZipPath),
             });
 
-            archives.push({ fZipName, uploadUrl: uploadAsset.url });
+            bodyContent.push(`\n- [${fZipName}](${uploadAsset.url})`);
         }
         catch (err) {
             return Object(_actions_core__WEBPACK_IMPORTED_MODULE_3__.setFailed)(err.message);
@@ -12326,7 +12316,7 @@ const octokit = Object(_actions_github__WEBPACK_IMPORTED_MODULE_4__.getOctokit)(
         owner,
         repo,
         release_id: releaseId,
-        body: `## Templates${archives.map(a => `\n- [${a.fZipName}](${a.uploadUrl})`).join('')}`,
+        body: `## Templates${bodyContent.join('')}`,
     });
 })();
 
