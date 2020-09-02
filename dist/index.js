@@ -12280,7 +12280,7 @@ const octokit = Object(_actions_github__WEBPACK_IMPORTED_MODULE_4__.getOctokit)(
     }
 
     const archives = [];
-    for (const f of Object(fs__WEBPACK_IMPORTED_MODULE_0__.readdirSync)(root)) {
+    for (let f of Object(fs__WEBPACK_IMPORTED_MODULE_0__.readdirSync)(root)) {
 
         console.log(f);
         f = Object(path__WEBPACK_IMPORTED_MODULE_1__.join)(root, f);

@@ -39,7 +39,7 @@ const octokit = getOctokit(process.env.GITHUB_TOKEN);
     }
 
     const archives = [];
-    for (const f of readdirSync(root)) {
+    for (let f of readdirSync(root)) {
 
         console.log(f);
         f = join(root, f);
