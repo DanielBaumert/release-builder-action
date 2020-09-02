@@ -12283,8 +12283,8 @@ const octokit = Object(_actions_github__WEBPACK_IMPORTED_MODULE_4__.getOctokit)(
     for (const f of Object(fs__WEBPACK_IMPORTED_MODULE_0__.readdirSync)(root)) {
 
         console.log(f);
-        f = path.join(root, f);
-        
+        f = Object(path__WEBPACK_IMPORTED_MODULE_1__.join)(root, f);
+
         if (!Object(fs__WEBPACK_IMPORTED_MODULE_0__.statSync)(f).isDirectory()) {
             console.warn(`${f} is not a directory!`);
             continue;

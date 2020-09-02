@@ -42,8 +42,8 @@ const octokit = getOctokit(process.env.GITHUB_TOKEN);
     for (const f of readdirSync(root)) {
 
         console.log(f);
-        f = path.join(root, f);
-        
+        f = join(root, f);
+
         if (!statSync(f).isDirectory()) {
             console.warn(`${f} is not a directory!`);
             continue;
