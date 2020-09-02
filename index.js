@@ -10,9 +10,9 @@ import { join } from 'path';
 import archiver from 'archiver';
 
 import { getInput, setFailed } from '@actions/core';
-import { GitHub, context } from '@actions/github';
+import { getOctokit, context } from '@actions/github';
 
-const octokit = new GitHub(process.env.GITHUB_TOKEN);
+const octokit = getOctokit(process.env.GITHUB_TOKEN);
 
 (async () => {
     const dir = getInput('dir', { required: true });
@@ -32,6 +32,8 @@ const octokit = new GitHub(process.env.GITHUB_TOKEN);
     if (!lstatSync(root).isDirectory()) {
         return setFailed(`${root} - Is not a directory!`);
     }
+
+    const { owner, repo } = context.repo;
 
     const bodyContent = [];
     for (const f of readdirSync(root)) {
@@ -55,13 +57,16 @@ const octokit = new GitHub(process.env.GITHUB_TOKEN);
             const { 
                 data: { browser_download_url: browserDownloadUrl }
             } = await octokit.repos.uploadReleaseAsset({
+                owner,
+                repo,
+                release_id: releaseId,
                 url: uploadUrl,
                 headers: {
                     'content-type': 'application/zip',
                     'content-length': statSync(fZipPath).size,
                 },
                 name: fZipName,
-                file: readFileSync(fZipPath)
+                data: readFileSync(fZipPath)
             });
 
             bodyContent.push(`\n- [${fZipName}](${browserDownloadUrl})`);
@@ -71,7 +76,7 @@ const octokit = new GitHub(process.env.GITHUB_TOKEN);
         }
     }
 
-    const { owner, repo } = context.repo;
+   
 
     await octokit.repos.updateRelease({
         owner,
