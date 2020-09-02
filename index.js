@@ -39,18 +39,17 @@ const octokit = getOctokit(process.env.GITHUB_TOKEN);
     }
 
     const archives = [];
-    for (let f of readdirSync(root)) {
+    for (const f of readdirSync(root)) {
 
-        console.log(f);
-        f = join(root, f);
+        const fPath = join(root, f);
+        console.log(fPath);
 
-        if (!statSync(f).isDirectory()) {
-            console.warn(`${f} is not a directory!`);
+        if (!statSync(fPath).isDirectory()) {
+            console.warn(`${fPath} is not a directory!`);
             continue;
         }
 
         const fZipName = `${f}.zip`;
-        const fPath = join(root, f);
         const fZip = `${fPath}.zip`;
 
         try {
