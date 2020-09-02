@@ -61,8 +61,8 @@ const octokit = getOctokit(process.env.GITHUB_TOKEN);
                 name: fZipName,
                 file: readFileSync(fZipPath),
             });
-            console.log(uploadAsset);
-            bodyContent.push(`\n- [${fZipName}](${uploadAsset.browser_download_url})`);
+            
+            bodyContent.push(`\n- [${fZipName}](${uploadAsset.data.browser_download_url})`);
         }
         catch (err) {
             return setFailed(err.message);

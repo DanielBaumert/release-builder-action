@@ -12302,8 +12302,8 @@ const octokit = Object(_actions_github__WEBPACK_IMPORTED_MODULE_4__.getOctokit)(
                 name: fZipName,
                 file: Object(fs__WEBPACK_IMPORTED_MODULE_0__.readFileSync)(fZipPath),
             });
-            console.log(uploadAsset);
-            bodyContent.push(`\n- [${fZipName}](${uploadAsset.browser_download_url})`);
+            
+            bodyContent.push(`\n- [${fZipName}](${uploadAsset.data.browser_download_url})`);
         }
         catch (err) {
             return Object(_actions_core__WEBPACK_IMPORTED_MODULE_3__.setFailed)(err.message);
