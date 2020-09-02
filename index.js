@@ -85,6 +85,6 @@ const octokit = getOctokit(process.env.GITHUB_TOKEN);
         owner,
         repo,
         release_id: releaseId,
-        body: `## Templates${archives.map(a => `\n- [${a.fZipName}](${a.uploadUrl})`)}`,
+        body: `## Templates${archives.map(a => `\n- [${a.fZipName}](${a.uploadUrl})`).join()}`,
     });
 })();
