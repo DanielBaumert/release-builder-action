@@ -12307,7 +12307,7 @@ const octokit = Object(_actions_github__WEBPACK_IMPORTED_MODULE_4__.getOctokit)(
                     'content-length': Object(fs__WEBPACK_IMPORTED_MODULE_0__.statSync)(fZipPath).size,
                 },
                 name: fZipName,
-                data: Object(fs__WEBPACK_IMPORTED_MODULE_0__.readFileSync)(fZipPath)
+                data: Object(fs__WEBPACK_IMPORTED_MODULE_0__.createReadStream)(fZipPath)
             });
 
             bodyContent.push(`\n- [${fZipName}](${browserDownloadUrl})`);

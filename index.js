@@ -5,6 +5,7 @@ import {
     statSync,
     createWriteStream,
     readFileSync,
+    createReadStream,
 } from 'fs';
 import { join } from 'path';
 import archiver from 'archiver';
@@ -66,7 +67,7 @@ const octokit = getOctokit(process.env.GITHUB_TOKEN);
                     'content-length': statSync(fZipPath).size,
                 },
                 name: fZipName,
-                data: readFileSync(fZipPath)
+                data: createReadStream(fZipPath)
             });
 
             bodyContent.push(`\n- [${fZipName}](${browserDownloadUrl})`);
