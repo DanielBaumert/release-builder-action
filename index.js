@@ -21,12 +21,12 @@ const octokit = getOctokit(process.env.GITHUB_TOKEN);
     const dir = getInput('dir', { required: true });
     const releaseId = getInput('release_id', { required: true });
     const uploadUrl = getInput('upload_url', { required: true });
-    
+
     console.log('Input:');
     console.log(`    dir: ${dir}`);
     console.log(`    release_id: ${releaseId}`);
     console.log(`    upload_url: ${uploadUrl}`);
-    
+
     console.log('Programm:');
     const root = join(process.env.GITHUB_WORKSPACE, dir);
     if (!existsSync(root)) {
@@ -42,8 +42,9 @@ const octokit = getOctokit(process.env.GITHUB_TOKEN);
     for (const f of readdirSync(root)) {
 
         console.log(f);
+        f = path.join(root, f);
         
-        if(!statSync(f).isDirectory()){
+        if (!statSync(f).isDirectory()) {
             console.warn(`${f} is not a directory!`);
             continue;
         }
@@ -51,7 +52,7 @@ const octokit = getOctokit(process.env.GITHUB_TOKEN);
         const fZipName = `${f}.zip`;
         const fPath = join(root, f);
         const fZip = `${fPath}.zip`;
- 
+
         try {
             const output = createWriteStream(fZip);
 
@@ -72,13 +73,13 @@ const octokit = getOctokit(process.env.GITHUB_TOKEN);
                 file: readFileSync(fZip),
             });
 
-            archives.push({fZipName, uploadUrl: uploadAsset.url});
-         }
-         catch(err) { 
-            setFailed(err.message);
-         }
+            archives.push({ fZipName, uploadUrl: uploadAsset.url });
+        }
+        catch (err) {
+            return setFailed(err.message);
+        }
     }
-    
+
     const { owner, repo } = context.repo;
 
     await octokit.repos.updateRelease({

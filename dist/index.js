@@ -12262,12 +12262,12 @@ const octokit = Object(_actions_github__WEBPACK_IMPORTED_MODULE_4__.getOctokit)(
     const dir = Object(_actions_core__WEBPACK_IMPORTED_MODULE_3__.getInput)('dir', { required: true });
     const releaseId = Object(_actions_core__WEBPACK_IMPORTED_MODULE_3__.getInput)('release_id', { required: true });
     const uploadUrl = Object(_actions_core__WEBPACK_IMPORTED_MODULE_3__.getInput)('upload_url', { required: true });
-    
+
     console.log('Input:');
     console.log(`    dir: ${dir}`);
     console.log(`    release_id: ${releaseId}`);
     console.log(`    upload_url: ${uploadUrl}`);
-    
+
     console.log('Programm:');
     const root = Object(path__WEBPACK_IMPORTED_MODULE_1__.join)(process.env.GITHUB_WORKSPACE, dir);
     if (!Object(fs__WEBPACK_IMPORTED_MODULE_0__.existsSync)(root)) {
@@ -12283,8 +12283,9 @@ const octokit = Object(_actions_github__WEBPACK_IMPORTED_MODULE_4__.getOctokit)(
     for (const f of Object(fs__WEBPACK_IMPORTED_MODULE_0__.readdirSync)(root)) {
 
         console.log(f);
+        f = path.join(root, f);
         
-        if(!Object(fs__WEBPACK_IMPORTED_MODULE_0__.statSync)(f).isDirectory()){
+        if (!Object(fs__WEBPACK_IMPORTED_MODULE_0__.statSync)(f).isDirectory()) {
             console.warn(`${f} is not a directory!`);
             continue;
         }
@@ -12292,7 +12293,7 @@ const octokit = Object(_actions_github__WEBPACK_IMPORTED_MODULE_4__.getOctokit)(
         const fZipName = `${f}.zip`;
         const fPath = Object(path__WEBPACK_IMPORTED_MODULE_1__.join)(root, f);
         const fZip = `${fPath}.zip`;
- 
+
         try {
             const output = Object(fs__WEBPACK_IMPORTED_MODULE_0__.createWriteStream)(fZip);
 
@@ -12313,13 +12314,13 @@ const octokit = Object(_actions_github__WEBPACK_IMPORTED_MODULE_4__.getOctokit)(
                 file: Object(fs__WEBPACK_IMPORTED_MODULE_0__.readFileSync)(fZip),
             });
 
-            archives.push({fZipName, uploadUrl: uploadAsset.url});
-         }
-         catch(err) { 
-            Object(_actions_core__WEBPACK_IMPORTED_MODULE_3__.setFailed)(err.message);
-         }
+            archives.push({ fZipName, uploadUrl: uploadAsset.url });
+        }
+        catch (err) {
+            return Object(_actions_core__WEBPACK_IMPORTED_MODULE_3__.setFailed)(err.message);
+        }
     }
-    
+
     const { owner, repo } = _actions_github__WEBPACK_IMPORTED_MODULE_4__.context.repo;
 
     await octokit.repos.updateRelease({
