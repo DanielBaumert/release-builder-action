@@ -12326,7 +12326,7 @@ const octokit = Object(_actions_github__WEBPACK_IMPORTED_MODULE_4__.getOctokit)(
         owner,
         repo,
         release_id: releaseId,
-        body: `## Templates${archives.map(a => `\n- [${a.fZipName}](${a.uploadUrl})`).join()}`,
+        body: `## Templates${archives.map(a => `\n- [${a.fZipName}](${a.uploadUrl})`).join('')}`,
     });
 })();
 
