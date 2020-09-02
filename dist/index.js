@@ -12289,9 +12289,15 @@ const octokit = Object(_actions_github__WEBPACK_IMPORTED_MODULE_4__.getOctokit)(
 
         try {
             const zipArchive = archiver__WEBPACK_IMPORTED_MODULE_2___default()('zip');
-            zipArchive.pipe(Object(fs__WEBPACK_IMPORTED_MODULE_0__.createWriteStream)(fZipPath));
-            await zipArchive.directory(fPath, false)
-                            .finalize();
+            const stream = Object(fs__WEBPACK_IMPORTED_MODULE_0__.createWriteStream)(fZipPath);
+            await new Promise((res, rej) => {
+                zipArchive.directory(fPath, false)   
+                        .on('error', err => rej(err))
+                        .pipe(stream);   
+
+                stream.on('close', () => res());
+                zipArchive.finalize();      
+            });
 
             const uploadAsset = await octokit.repos.uploadReleaseAsset({
                 url: uploadUrl,
@@ -12302,7 +12308,7 @@ const octokit = Object(_actions_github__WEBPACK_IMPORTED_MODULE_4__.getOctokit)(
                 name: fZipName,
                 file: Object(fs__WEBPACK_IMPORTED_MODULE_0__.readFileSync)(fZipPath),
             });
-            
+
             bodyContent.push(`\n- [${fZipName}](${uploadAsset.data.browser_download_url})`);
         }
         catch (err) {

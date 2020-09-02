@@ -48,9 +48,15 @@ const octokit = getOctokit(process.env.GITHUB_TOKEN);
 
         try {
             const zipArchive = archiver('zip');
-            zipArchive.pipe(createWriteStream(fZipPath));
-            await zipArchive.directory(fPath, false)
-                            .finalize();
+            const stream = createWriteStream(fZipPath);
+            await new Promise((res, rej) => {
+                zipArchive.directory(fPath, false)   
+                        .on('error', err => rej(err))
+                        .pipe(stream);   
+
+                stream.on('close', () => res());
+                zipArchive.finalize();      
+            });
 
             const uploadAsset = await octokit.repos.uploadReleaseAsset({
                 url: uploadUrl,
@@ -61,7 +67,7 @@ const octokit = getOctokit(process.env.GITHUB_TOKEN);
                 name: fZipName,
                 file: readFileSync(fZipPath),
             });
-            
+
             bodyContent.push(`\n- [${fZipName}](${uploadAsset.data.browser_download_url})`);
         }
         catch (err) {
