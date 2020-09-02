@@ -12289,27 +12289,23 @@ const octokit = Object(_actions_github__WEBPACK_IMPORTED_MODULE_4__.getOctokit)(
 
         try {
             const zipArchive = archiver__WEBPACK_IMPORTED_MODULE_2___default()('zip');
-            const stream = Object(fs__WEBPACK_IMPORTED_MODULE_0__.createWriteStream)(fZipPath);
-            await new Promise((res, rej) => {
-                zipArchive.directory(fPath, false)   
-                        .on('error', err => rej(err))
-                        .pipe(stream);   
+            zipArchive.pipe(Object(fs__WEBPACK_IMPORTED_MODULE_0__.createWriteStream)(fZipPath));  
+            await zipArchive.directory(fPath, false)
+                .finalize();  
 
-                stream.on('close', () => res());
-                zipArchive.finalize();      
-            });
-
-            const uploadAsset = await octokit.repos.uploadReleaseAsset({
+            const { 
+                data: { browser_download_url: browserDownloadUrl }
+            } = await octokit.repos.uploadReleaseAsset({
                 url: uploadUrl,
                 headers: {
                     'content-type': 'application/zip',
                     'content-length': Object(fs__WEBPACK_IMPORTED_MODULE_0__.statSync)(fZipPath).size,
                 },
                 name: fZipName,
-                file: Object(fs__WEBPACK_IMPORTED_MODULE_0__.readFileSync)(fZipPath),
+                file: Object(fs__WEBPACK_IMPORTED_MODULE_0__.createReadStream)(fZipPath)
             });
 
-            bodyContent.push(`\n- [${fZipName}](${uploadAsset.data.browser_download_url})`);
+            bodyContent.push(`\n- [${fZipName}](${browserDownloadUrl})`);
         }
         catch (err) {
             return Object(_actions_core__WEBPACK_IMPORTED_MODULE_3__.setFailed)(err.message);

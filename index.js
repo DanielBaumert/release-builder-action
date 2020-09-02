@@ -4,7 +4,7 @@ import {
     readdirSync,
     statSync,
     createWriteStream,
-    readFileSync,
+    createReadStream,
 } from 'fs';
 import { join } from 'path';
 import archiver from 'archiver';
@@ -48,27 +48,23 @@ const octokit = getOctokit(process.env.GITHUB_TOKEN);
 
         try {
             const zipArchive = archiver('zip');
-            const stream = createWriteStream(fZipPath);
-            await new Promise((res, rej) => {
-                zipArchive.directory(fPath, false)   
-                        .on('error', err => rej(err))
-                        .pipe(stream);   
+            zipArchive.pipe(createWriteStream(fZipPath));  
+            await zipArchive.directory(fPath, false)
+                .finalize();  
 
-                stream.on('close', () => res());
-                zipArchive.finalize();      
-            });
-
-            const uploadAsset = await octokit.repos.uploadReleaseAsset({
+            const { 
+                data: { browser_download_url: browserDownloadUrl }
+            } = await octokit.repos.uploadReleaseAsset({
                 url: uploadUrl,
                 headers: {
                     'content-type': 'application/zip',
                     'content-length': statSync(fZipPath).size,
                 },
                 name: fZipName,
-                file: readFileSync(fZipPath),
+                file: createReadStream(fZipPath)
             });
 
-            bodyContent.push(`\n- [${fZipName}](${uploadAsset.data.browser_download_url})`);
+            bodyContent.push(`\n- [${fZipName}](${browserDownloadUrl})`);
         }
         catch (err) {
             return setFailed(err.message);
