@@ -12253,7 +12253,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-const octokit = Object(_actions_github__WEBPACK_IMPORTED_MODULE_4__.getOctokit)(process.env.GITHUB_TOKEN);
+const octokit = new _actions_github__WEBPACK_IMPORTED_MODULE_4__.GitHub(process.env.GITHUB_TOKEN);
 
 (async () => {
     const dir = Object(_actions_core__WEBPACK_IMPORTED_MODULE_3__.getInput)('dir', { required: true });
@@ -12302,7 +12302,7 @@ const octokit = Object(_actions_github__WEBPACK_IMPORTED_MODULE_4__.getOctokit)(
                     'content-length': Object(fs__WEBPACK_IMPORTED_MODULE_0__.statSync)(fZipPath).size,
                 },
                 name: fZipName,
-                file: Object(fs__WEBPACK_IMPORTED_MODULE_0__.createReadStream)(fZipPath)
+                file: Object(fs__WEBPACK_IMPORTED_MODULE_0__.readFileSync)(fZipPath)
             });
 
             bodyContent.push(`\n- [${fZipName}](${browserDownloadUrl})`);

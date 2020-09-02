@@ -4,15 +4,15 @@ import {
     readdirSync,
     statSync,
     createWriteStream,
-    createReadStream,
+    readFileSync,
 } from 'fs';
 import { join } from 'path';
 import archiver from 'archiver';
 
 import { getInput, setFailed } from '@actions/core';
-import { getOctokit, context } from '@actions/github';
+import { GitHub, context } from '@actions/github';
 
-const octokit = getOctokit(process.env.GITHUB_TOKEN);
+const octokit = new GitHub(process.env.GITHUB_TOKEN);
 
 (async () => {
     const dir = getInput('dir', { required: true });
@@ -61,7 +61,7 @@ const octokit = getOctokit(process.env.GITHUB_TOKEN);
                     'content-length': statSync(fZipPath).size,
                 },
                 name: fZipName,
-                file: createReadStream(fZipPath)
+                file: readFileSync(fZipPath)
             });
 
             bodyContent.push(`\n- [${fZipName}](${browserDownloadUrl})`);
