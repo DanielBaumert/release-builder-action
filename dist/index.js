@@ -12303,7 +12303,7 @@ const octokit = Object(_actions_github__WEBPACK_IMPORTED_MODULE_4__.getOctokit)(
                 file: Object(fs__WEBPACK_IMPORTED_MODULE_0__.readFileSync)(fZipPath),
             });
 
-            bodyContent.push(`\n- [${fZipName}](${uploadAsset.url})`);
+            bodyContent.push(`\n- [${fZipName}](${uploadAsset.browser_download_url})`);
         }
         catch (err) {
             return Object(_actions_core__WEBPACK_IMPORTED_MODULE_3__.setFailed)(err.message);
